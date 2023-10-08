@@ -11,6 +11,8 @@ import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core/styles";
 import Zoom from "react-reveal/Zoom";
 import MenuIcon from "@material-ui/icons/Menu";
+import College from "./College";
+import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   paper: {
     width: 400,
@@ -59,6 +61,7 @@ const Header = () => {
         <TextField label="Name" fullWidth />
         <TextField label="Email" fullWidth />
         <TextField label="Message" fullWidth />
+        <Link to="/forgot-password">Forgot Password</Link>
         <Button
           fullWidth
           color="primary"
