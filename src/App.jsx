@@ -5,6 +5,7 @@ import Post from "./pages/Post";
 import Login from "./pages/Login";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Register from "./pages/Register";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -47,6 +48,10 @@ const App = () => {
           <Route
             path="/post/:id"
             element={user ? <Post /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/register"
+            element={user ? <Navigate to="/" /> : <Register />}
           />
         </Routes>
       </div>

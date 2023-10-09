@@ -26,9 +26,22 @@ const Navbar = ({ user }) => {
           </li>
         </ul>
       ) : (
+        <>
+         <ul className="list">
+          <li className="listItem">
         <Link className="link" to="login">
           Login
         </Link>
+        </li>
+        <li className="listItem">
+        <Link className="link" to="register">
+          Register
+        </Link>
+        </li>
+        </ul>
+      </>
+
+        
       )}
     </div>
   );

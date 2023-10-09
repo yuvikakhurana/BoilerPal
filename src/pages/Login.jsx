@@ -1,31 +1,50 @@
-import Google from "../google.png";
+import { Link } from "react-router-dom";
 
-const Login = () => {
-  const google = () => {
-    window.open("http://localhost:5000/auth/google", "_self");
+const Navbar = ({ user }) => {
+  const logout = () => {
+    window.open("http://localhost:5000/auth/logout", "_self");
   };
-
   return (
-    <div className="login">
-      <div className="wrapper">
-        <div className="left">
-          <div className="loginButton google" onClick={google}>
-            <img src={Google} alt="" className="icon" />
-            Log in via Google
-          </div>
-        </div>
-        <div className="center">
-          <div className="line" />
-          <div className="or">OR</div>
-        </div>
-        <div className="right">
-          <input type="text" placeholder="Username" />
-          <input type="text" placeholder="Password" />
-          <button className="submit">Login</button>
-        </div>
-      </div>
+    <div className="navbar">
+      <span className="logo">
+        <Link className="link" to="/">
+          BoilerPal
+        </Link>
+      </span>
+      {user ? (
+        <ul className="list">
+          <li className="listItem">
+            <img
+              src={user.photos[0].value}
+              alt=""
+              className="avatar"
+            />
+          </li>
+          <li className="listItem">{user.displayName}</li>
+          <li className="listItem" onClick={logout}>
+            Logout
+          </li>
+        </ul>
+      ) : (
+        <>
+         <ul className="list">
+          <li className="listItem">
+        <Link className="link" to="login">
+          Login
+        </Link>
+        </li>
+        <li className="listItem">
+        <Link className="link" to="register">
+          Register
+        </Link>
+        </li>
+        </ul>
+      </>
+
+        
+      )}
     </div>
   );
 };
 
-export default Login;
+export default Navbar;
