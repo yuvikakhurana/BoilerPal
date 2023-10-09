@@ -11,6 +11,7 @@ import Modal from "@material-ui/core/Modal";
 import { makeStyles } from "@material-ui/core/styles";
 import Zoom from "react-reveal/Zoom";
 import MenuIcon from "@material-ui/icons/Menu";
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     width: 400,
@@ -31,9 +32,13 @@ const Header = () => {
     let mounted = true;
     window.addEventListener("scroll", () => {
       if (window.scrollY > 100) {
-        if (mounted) setShow(true);
+        if (mounted) {
+          setShow(true);
+        }
       } else {
-        if (mounted) setShow(false);
+        if (mounted) {
+          setShow(false);
+        }
       }
     });
     window.addEventListener("resize", () => {
@@ -117,7 +122,7 @@ const Header = () => {
             <li className="nav-item">
               <a
                 className="nav-link"
-                href="#college"
+                href="/college"
                 onClick={() => {
                   setSideNav(false);
                 }}
@@ -128,7 +133,7 @@ const Header = () => {
             <li className="nav-item">
               <a
                 className="nav-link"
-                href="#intern"
+                href="/intern"
                 onClick={() => {
                   setSideNav(false);
                 }}
@@ -139,7 +144,7 @@ const Header = () => {
             <li className="nav-item">
               <a
                 className="nav-link"
-                href="#jobs"
+                href="/jobs"
                 onClick={() => {
                   setSideNav(false);
                 }}
@@ -150,7 +155,7 @@ const Header = () => {
             <li className="nav-item">
               <a
                 className="nav-link"
-                href="#scholarships"
+                href="/scholarships"
                 onClick={() => {
                   setSideNav(false);
                 }}
@@ -161,7 +166,7 @@ const Header = () => {
             <li className="nav-item">
               <a
                 className="nav-link"
-                href="#competitions"
+                href="/competitions"
                 onClick={() => {
                   setSideNav(false);
                 }}
@@ -172,7 +177,7 @@ const Header = () => {
             <li className="nav-item">
               <a
                 className="nav-link"
-                href="#events"
+                href="/events"
                 onClick={() => {
                   setSideNav(false);
                 }}
@@ -223,37 +228,37 @@ const Header = () => {
             <div className="for_desktop">
               <ul className="navbar-nav mr-auto text-center nav_link main_menu">
                 <li className="nav-item">
-                  <a className="nav-link" href="#connect">
+                  <a className="nav-link" href="/connect">
                     Connect
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#college">
+                  <a className="nav-link" href="/college">
                     College
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#intern">
+                  <a className="nav-link" href="/intern">
                     Internships
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#jobs">
+                  <a className="nav-link" href="/jobs">
                     Jobs
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#scholarships">
+                  <a className="nav-link" href="/scholarships">
                     Scholarships
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#competitions">
+                  <a className="nav-link" href="/competitions">
                     Competitions
                   </a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link" href="#events">
+                  <a className="nav-link" href="/events">
                     Events
                   </a>
                 </li>

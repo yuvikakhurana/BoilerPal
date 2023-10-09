@@ -46,14 +46,14 @@ const Home = () => {
               >
                 <h4 className="metropolis_regular font_30">
                   <Typed
-                    strings={["WELCOME TO", "The College Social Network"]}
+                    strings={["Welcome to", "BoilerPal", "All your needs...", "...in one place!"]}
                     typeSpeed={40}
                     backSpeed={50}
                     loop
                   ></Typed>
                 </h4>
               </div>
-              <div
+              {/* <div
                 className="wow fadeInUp"
                 data-wow-delay=".7s"
                 style={{
@@ -72,7 +72,7 @@ const Home = () => {
                 >
                   Download App Now
                 </h5>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
