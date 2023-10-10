@@ -1,6 +1,8 @@
 import Google from "../google.png";
 import Github from "../github.png";
+import Purdue from "../Purdue.jpg";
 import { useState } from 'react';
+import { Link } from "react-router-dom";
 
 import "./login.css"
 
@@ -12,21 +14,9 @@ const Login = () => {
     const handlePasswordChange = (e) => {
         setPassword(e.target.value); 
     }
-      
-
-    const strictPasswordCheck = () => {
-        // Add password validation logic here
-        // For example:
-        const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
-        return strongRegex.test(password);
-    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if(!strictPasswordCheck()) {
-        alert('Password is not strong enough!');
-        return;
-        }
         // Rest of submit logic
     }
   const google = () => {
@@ -38,7 +28,6 @@ const Login = () => {
   };
 
   return (
-    <div className="login">
       <div className="wrapper">
         <div className="left">
           <div className="loginButton google" onClick={google}>
@@ -55,6 +44,7 @@ const Login = () => {
           <div className="or">OR</div>
         </div>
         <div className="right">
+        <img src= {Purdue} alt="" className="logo" width="50%" />
           <input type="text" placeholder="Username" />
           <input 
         type="password"
@@ -63,9 +53,11 @@ const Login = () => {
         onChange={handlePasswordChange} 
       />
       <button className="submit" onClick={handleSubmit}>Login</button>
+      <div className="register-link">
+          Not registered? <Link to="/register">Click here</Link> to register
+        </div>
         </div>
       </div>
-    </div>
   );
 };
 

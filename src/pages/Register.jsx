@@ -1,6 +1,8 @@
 import Google from "../google.png";
 import Github from "../github.png";
 import { useState } from 'react';
+import { Link } from "react-router-dom";
+import Purdue from "../Purdue.jpg";
 
 import "./login.css"
 
@@ -8,9 +10,23 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    const [passwordStrength, setPasswordStrength] = useState('');
+
+// Add method to calculate password strength
+const calculatePasswordStrength = (password) => {
+  let strength = 'Weak';
+  if (password.length > 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /[0-9]/.test(password)) {
+    strength = 'Strong';
+  } else if (password.length > 5) {
+    strength = 'Medium';
+  }
+  setPasswordStrength(strength);
+}
+
 
     const handlePasswordChange = (e) => {
         setPassword(e.target.value); 
+        calculatePasswordStrength(e.target.value); 
     }
 
     const handleConfirmPasswordChange = (e) => {
@@ -67,6 +83,7 @@ const Register = () => {
           <div className="or">OR</div>
         </div>
         <div className="right">
+        <img src= {Purdue} alt="" className="logo" width="50%" />
           <input type="text" placeholder="Username" />
           <input 
         type="password"
@@ -74,6 +91,7 @@ const Register = () => {
         value={password}
         onChange={handlePasswordChange} 
       />
+        <div className={passwordStrength}>{passwordStrength}</div>
       <input
     type="password"
     placeholder="Confirm Password"
@@ -81,6 +99,9 @@ const Register = () => {
     onChange={handleConfirmPasswordChange}
   />
       <button className="submit" onClick={handleSubmit}>Register</button>
+      <div className="register-link">
+          Already registered? <Link to="/login">Click here</Link> to login
+        </div>
         </div>
       </div>
     </div>
