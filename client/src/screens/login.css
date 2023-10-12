@@ -1,0 +1,64 @@
+.head {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+    text-align: center; /* Center text inside the container */
+}
+
+.Weak {
+    color: red;
+    padding-bottom: 10px;
+  }
+  
+  .Medium {
+    color: orange;  
+    padding-bottom: 10px;
+  }
+  
+  .Strong {
+    color: green;
+    padding-bottom: 10px;
+  }
+
+    /* Make social login buttons animated */
+      
+      .loginButton:hover {
+        transform: scale(1.1); 
+      }
+
+      .loginButton{
+        font-size: 10px;
+        align-items:flex-end;
+        justify-content: center;
+        width: 20%;
+        padding: 15px 0px;
+        border-radius: 5px;
+        color: white;
+        display: flex;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      
+      .google{
+        background-color: #df4930;
+      }
+      .facebook{
+        background-color: #507cc0;
+      }
+      .github{
+        background-color: black;
+      }
+      .icon{
+        width: 15px;
+        height: 15px;
+      }
+
+      .sign-in {
+        display: flex;
+        align-items:end;
+        justify-content: space-around;
+      }
+
+      .OR {
+        margin-bottom: 10px;
+      }
