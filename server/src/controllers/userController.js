@@ -1,6 +1,10 @@
 import asyncHandler from 'express-async-handler'
-import generateToken from '../utils/generateToken.js'
+import crypto from 'crypto';
+import generateJWT from '../utils/generateJWT.js'
 import User from '../models/userModel.js';
+import Token from '../models/verificationToken.js'
+import sendEmail from '../utils/sendEmail.js'
+import verificationToken from '../models/verificationToken.js';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/auth
@@ -9,18 +13,32 @@ const authUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
   
     const user = await User.findOne({ email });
-  
-    if (user && (await user.matchPassword(password))) {
-      generateToken(res, user._id);
-  
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-      });
+    let verifyToken;
+    if (!user.verified) {
+        verifyToken = await Token.findOne({ userId: user._id });
+			if (!verifyToken) {
+				verifyToken = await new Token({
+					userId: user._id,
+					token: crypto.randomBytes(32).toString("hex"),
+				}).save();
+				const url = `${process.env.BASE_URL}users/${user.id}/verify/${verifyToken.token}`;
+				await sendEmail(user.email, "Verify Email", url);
+			}
+        res.status(400).send({ message: "An Email sent to your account please verify" });
     } else {
-      res.status(401);
-      throw new Error('Invalid email or password');
+        if (user && (await user.matchPassword(password))) {
+            generateJWT(res, user._id);
+            res.status(200);
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                verified: user.verified
+            });
+        } else {
+          res.status(401);
+          throw new Error('Invalid email or password');
+        }
     }
   });
 
@@ -30,7 +48,7 @@ const authUser = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
     
-    const userExists = await  User.findOne({ email });
+    const userExists = await User.findOne({ email });
     
     if (userExists) {
         res.status(400);
@@ -43,12 +61,22 @@ const registerUser = asyncHandler(async (req, res) => {
         password
     });
 
+    // Sending email verification link
+    const verifyToken = await new verificationToken({
+        userId: user._id,
+        token: crypto.randomBytes(32).toString('hex')
+    }).save();
+    const url = `${process.env.BASE_URL}users/verify/${user.id}/${verifyToken.token}`;
+    await sendEmail(user.email, "Verify Email", url);
+    
+    // Creating JWT and returning newly created user info
     if (user) {
-        generateToken(res, user._id);
+        generateJWT(res, user._id);
         res.status(201).json({
             _id: user._id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            verified: user.verified
         });
     } else {
         res.status(400);
@@ -108,10 +136,133 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Verifies account once user clicks on verify link
+// route    GET /api/users/:id/:token
+// @access  Public
+const getLinkTokenAndVerify = asyncHandler(async (req, res) => {
+    const user = await User.findOne({ _id: req.params.id });
+    
+    if (!user) return res.status(400).send({ message: "Invalid link" });
+
+    const token = await Token.findOne({
+        userId: user._id,
+        token: req.params.token,
+    });
+    if (!token) return res.status(400).send({ message: "Invalid link" });
+
+    await User.updateOne({ _id: user._id, verified: true });
+    await token.deleteOne();
+
+    res.status(200).send({ message: "Email verified successfully" });
+});
+
+// @desc    Send forgot password link to email
+// route    POST /api/users/password-reset
+// @access  Public
+const sendForgotPasswordLink = asyncHandler(async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+        res.status(400);
+        throw new Error('User with given email does not exist!');
+    }
+    
+    let token = await Token.findOne({ userId: user._id });
+		if (!token) {
+			token = await new Token({
+				userId: user._id,
+				token: crypto.randomBytes(32).toString("hex"),
+			}).save();
+		}
+
+		const url = `${process.env.BASE_URL}users/password-reset/${user.id}/${token.token}/`;
+		try {
+            const sent = await sendEmail(user.email, "Password Reset", url);
+        } catch (error) {
+            res.status(500);
+            throw new Error('Internal server error');
+        }
+
+        res.status(200).json({ message: "Password reset link sent to your email account" });
+});
+
+// @desc    Verify that password link is valid
+// route    GET /api/users/password-reset/:id/:token
+// @access  Public
+const verifyForgotPasswordLink = asyncHandler(async (req, res) => {
+	try {
+		const user = await User.findOne({ _id: req.params.id });
+        
+		if (!user) {
+            res.status(400);
+            throw new Error('Invalid link');
+        }
+
+		const token = await Token.findOne({
+			userId: user._id,
+			token: req.params.token,
+		});
+		if (!token) {
+            res.status(400);
+            throw new Error('Invalid link');
+        }
+
+		res.status(200).json({ message: "Valid link" });
+	} catch (error) {
+        res.status(500);
+        throw new Error('Invalid link');
+	}
+});
+
+// @desc    Change password from forgot password link
+// route    POST /api/users/password-reset/:id/:token
+// @access  Public
+const setNewPassword = asyncHandler(async (req, res) => {
+	try {
+		const user = await User.findOne({ _id: req.params.id });
+		if (!user){
+            res.status(400);
+            throw new Error('Invalid link');
+        }
+        
+		const token = await Token.findOne({
+			userId: user._id,
+			token: req.params.token,
+		});
+		if (!token){
+            res.status(400);
+            throw new Error('Invalid link');
+        }
+
+		if (!user.verified) {
+            user.verified = true;
+        }
+        
+        if (req.body.password) {
+            user.password = req.body.password;
+        } else {
+            res.status(400);
+            throw new Error('Invalid input');
+        }
+
+        const updatedUser = await user.save();
+        await token.deleteOne();
+
+		res.status(200).json({ message: "Password reset successfully" });
+	} catch (error) {
+        res.status(500);
+        throw new Error('Invalid link');
+	}
+});
+
 export {
     authUser,
     registerUser,
     logoutUser,
     getUserProfile,
-    updateUserProfile
+    updateUserProfile,
+    getLinkTokenAndVerify,
+    sendForgotPasswordLink,
+    verifyForgotPasswordLink,
+    setNewPassword
 };
