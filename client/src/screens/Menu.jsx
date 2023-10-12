@@ -53,15 +53,104 @@ const Menu = () => {
           </Accordion.Body>
         </Accordion.Item>
         <Accordion.Item eventKey="1">
-          <Accordion.Header>Accordion Item #2</Accordion.Header>
+          <Accordion.Header>Ford</Accordion.Header>
           <Accordion.Body>
-            <Accordion defaultActiveKey="0">
+            <Accordion defaultActiveKey="">
               <Accordion.Item eventKey="0">
-                <Accordion.Header>Accordion Item #1</Accordion.Header>
-                <Accordion.Body>Lorem ipsum</Accordion.Body>
+                <Accordion.Header>Menu</Accordion.Header>
+                <Accordion.Body>
+                  <div className="container-fluid">
+                    <div className="row">
+                      <Buttons
+                        filterItem={filterItem}
+                        setItem={setItem}
+                        menuItems={menuItems}
+                      />
+                      <Card item={item} />
+                    </div>
+                  </div>
+                </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="1">
-                <Accordion.Header>Accordion Item #2</Accordion.Header>
+                <Accordion.Header>Reviews</Accordion.Header>
+                <Accordion.Body>Lorem ipsum dolor s</Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="2">
+          <Accordion.Header>Wiley</Accordion.Header>
+          <Accordion.Body>
+            <Accordion defaultActiveKey="">
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>Menu</Accordion.Header>
+                <Accordion.Body>
+                  <div className="container-fluid">
+                    <div className="row">
+                      <Buttons
+                        filterItem={filterItem}
+                        setItem={setItem}
+                        menuItems={menuItems}
+                      />
+                      <Card item={item} />
+                    </div>
+                  </div>
+                </Accordion.Body>
+              </Accordion.Item>
+              <Accordion.Item eventKey="1">
+                <Accordion.Header>Reviews</Accordion.Header>
+                <Accordion.Body>Lorem ipsum dolor s</Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="3">
+          <Accordion.Header>Windsor</Accordion.Header>
+          <Accordion.Body>
+            <Accordion defaultActiveKey="">
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>Menu</Accordion.Header>
+                <Accordion.Body>
+                  <div className="container-fluid">
+                    <div className="row">
+                      <Buttons
+                        filterItem={filterItem}
+                        setItem={setItem}
+                        menuItems={menuItems}
+                      />
+                      <Card item={item} />
+                    </div>
+                  </div>
+                </Accordion.Body>
+              </Accordion.Item>
+              <Accordion.Item eventKey="1">
+                <Accordion.Header>Reviews</Accordion.Header>
+                <Accordion.Body>Lorem ipsum dolor s</Accordion.Body>
+              </Accordion.Item>
+            </Accordion>
+          </Accordion.Body>
+        </Accordion.Item>
+        <Accordion.Item eventKey="4">
+          <Accordion.Header>Hillenbrand</Accordion.Header>
+          <Accordion.Body>
+            <Accordion defaultActiveKey="">
+              <Accordion.Item eventKey="0">
+                <Accordion.Header>Menu</Accordion.Header>
+                <Accordion.Body>
+                  <div className="container-fluid">
+                    <div className="row">
+                      <Buttons
+                        filterItem={filterItem}
+                        setItem={setItem}
+                        menuItems={menuItems}
+                      />
+                      <Card item={item} />
+                    </div>
+                  </div>
+                </Accordion.Body>
+              </Accordion.Item>
+              <Accordion.Item eventKey="1">
+                <Accordion.Header>Reviews</Accordion.Header>
                 <Accordion.Body>Lorem ipsum dolor s</Accordion.Body>
               </Accordion.Item>
             </Accordion>
