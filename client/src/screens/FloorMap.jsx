@@ -369,7 +369,7 @@ const FloorMap = () => {
               <Box>
                 <br/>
                 <img 
-                  src={"/Images/lawson_basement.jpeg"}
+                  src={"/Images/lawson_basement.png"}
                   width="100%"
                   height="100%"
                 />
@@ -380,7 +380,7 @@ const FloorMap = () => {
               <Box>
                 <br/>
                 <img 
-                  src={"/Images/lawson_first_floor.jpeg"}
+                  src={"/Images/lawson_first_floor.png"}
                   width="100%"
                   height="100%"
                 />
@@ -391,7 +391,7 @@ const FloorMap = () => {
               <Box>
                 <br/>
                 <img 
-                  src={"/Images/lawson_second_floor.jpeg"}
+                  src={"/Images/lawson_second_floor.png"}
                   width="100%"
                   height="100%"
                 />
@@ -402,7 +402,7 @@ const FloorMap = () => {
               <Box>
                 <br/>
                 <img 
-                  src={"/Images/lawson_third_floor.jpeg"}
+                  src={"/Images/lawson_third_floor.png"}
                   width="100%"
                   height="100%"
                 />
