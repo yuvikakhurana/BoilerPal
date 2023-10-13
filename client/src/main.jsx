@@ -18,6 +18,8 @@ import RegisterScreen from './screens/RegisterScreen.jsx';
 import ProfileScreen from './screens/ProfileScreen.jsx';
 import Dashboard from './screens/Dashboard.jsx';
 import VerifyAccount from './screens/VerifyAccount.jsx';
+import ForgotPassword from './screens/ForgotPassword.jsx';
+import PasswordReset from './screens/PasswordReset.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,6 +28,8 @@ const router = createBrowserRouter(
       <Route path='/login' element={<LoginScreen />} />
       <Route path='/register' element={<RegisterScreen />} />
       <Route path='/verify/:id/:token' element={<VerifyAccount />} />
+      <Route path='/forgotPassword' element={<ForgotPassword />} />
+      <Route path='/resetPassword/:id/:token' element={<PasswordReset />} />
       {/* Private Routes */}
       <Route path='' element={ <PrivateRoute /> }>
         <Route path='/dashboard' element={<Dashboard />} />

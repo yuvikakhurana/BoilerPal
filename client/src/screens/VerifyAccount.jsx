@@ -4,7 +4,7 @@ import { Form, Button } from "react-bootstrap";
 import FormContainer from "../components/FormContainer.jsx";
 import axios from 'axios';
 import { toast } from "react-toastify";
-import Success from '../../public/success.png';
+import Success from '../../public/success.png'
 
 const VerifyScreen = () => {
 	const [validUrl, setValidUrl] = useState(true);
@@ -39,23 +39,23 @@ const navigate = useNavigate();
 
   return (
     validUrl ? (<>
-        <FormContainer>
-        <div className="head">
-            <h1>You are Verified!</h1>
-            <img src={Success} alt="" className="logo" width="30%" />
+    <FormContainer>
+    <div className="head">
+        <h1>You are Verified!</h1>
+        <img src={Success} alt="" className="logo" width="30%" />
+    </div>
+
+    <Form onSubmit={submitHandler}>
+
+        <div className="sign-in">
+        <Button type="submit" variant="primary" className="mt-3">
+            Sign In
+        </Button>
         </div>
-
-        <Form onSubmit={submitHandler}>
-
-            <div className="sign-in">
-            <Button type="submit" variant="primary" className="mt-3">
-                Sign In
-            </Button>
-            </div>
-        </Form>
-        </FormContainer>
+    </Form>
+    </FormContainer>
     </>) : (<>
-      <h1>You are in the wrong place, please leave!</h1>
+    <h1>You are in the wrong place, please leave!</h1>
     </>)
   );
 };

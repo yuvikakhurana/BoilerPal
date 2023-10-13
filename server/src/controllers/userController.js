@@ -186,7 +186,7 @@ const sendForgotPasswordLink = asyncHandler(async (req, res) => {
 			}).save();
 		}
 
-		const url = `${process.env.BASE_URL}users/password-reset/${user.id}/${token.token}/`;
+		const url = `${process.env.BASE_URL}resetPassword/${user.id}/${token.token}/`;
 		try {
             const sent = await sendEmail(user.email, "Password Reset", url);
         } catch (error) {
@@ -203,10 +203,10 @@ const sendForgotPasswordLink = asyncHandler(async (req, res) => {
 const verifyForgotPasswordLink = asyncHandler(async (req, res) => {
 	try {
 		const user = await User.findOne({ _id: req.params.id });
-        
+        console.log(user);
 		if (!user) {
             res.status(400);
-            throw new Error('Invalid link');
+            throw new Error('Invalid link1');
         }
 
 		const token = await Token.findOne({
@@ -215,13 +215,13 @@ const verifyForgotPasswordLink = asyncHandler(async (req, res) => {
 		});
 		if (!token) {
             res.status(400);
-            throw new Error('Invalid link');
+            throw new Error('Invalid link2');
         }
 
 		res.status(200).json({ message: "Valid link" });
 	} catch (error) {
         res.status(500);
-        throw new Error('Invalid link');
+        throw new Error('Invalid link3');
 	}
 });
 
