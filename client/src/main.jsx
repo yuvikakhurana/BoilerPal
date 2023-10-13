@@ -18,6 +18,8 @@ import RegisterScreen from './screens/RegisterScreen.jsx';
 import ProfileScreen from './screens/ProfileScreen.jsx';
 import Dashboard from './screens/Dashboard.jsx';
 import VerifyAccount from './screens/VerifyAccount.jsx';
+import FloorMap from './screens/FloorMap.jsx';
+import VendingMachine from './screens/VendingMachine.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,6 +31,8 @@ const router = createBrowserRouter(
       {/* Private Routes */}
       <Route path='' element={ <PrivateRoute /> }>
         <Route path='/dashboard' element={<Dashboard />} />
+        <Route path="/floormap" element={<FloorMap />} />
+        <Route path="/vending" element={<VendingMachine />} />
         <Route path='/profile' element={<ProfileScreen />} />
       </Route>
     </Route>

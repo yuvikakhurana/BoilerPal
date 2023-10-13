@@ -51,6 +51,14 @@ const Header = () => {
                   <LinkContainer to='/dining'>
                     <Nav.Link>Dining</Nav.Link>
                   </LinkContainer>
+
+                  <LinkContainer to='/floormap'>
+                    <Nav.Link>Floor maps</Nav.Link>
+                  </LinkContainer>
+
+                  <LinkContainer to='/vending'>
+                    <Nav.Link>Vending Machines</Nav.Link>
+                  </LinkContainer>
                   
                   <NavDropdown title={userInfo.name} id='username'>
                     <LinkContainer to='/profile'>
