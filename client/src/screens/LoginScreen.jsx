@@ -32,9 +32,6 @@ const LoginScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (userInfo) {
-      navigate("/dashboard");
-    }
   }, [navigate, userInfo]);
 
   const submitHandler = async (e) => {
@@ -50,7 +47,7 @@ const LoginScreen = () => {
 
   return (
     <FormContainer>
-      <div class="head">
+      <div className="head">
         <h1>Sign In</h1>
         <img src={Purdue} alt="" className="logo" width="30%" />
       </div>

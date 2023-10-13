@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Form, Button, Row, Col } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { Form, Button } from "react-bootstrap";
 import FormContainer from "../components/FormContainer.jsx";
-import { useLoginMutation } from "../slices/usersApiSlice.js";
-import { setCredentials } from "../slices/authSlice.js";
 import axios from 'axios';
 import { toast } from "react-toastify";
 import Success from '../../public/success.png';
-import { useVerifyAccountMutation } from "../slices/usersApiSlice.js";
 
 const VerifyScreen = () => {
 	const [validUrl, setValidUrl] = useState(true);
@@ -45,7 +41,7 @@ const navigate = useNavigate();
     validUrl ? (<>
         <FormContainer>
         <div className="head">
-            <h1>You're Verified!</h1>
+            <h1>You are Verified!</h1>
             <img src={Success} alt="" className="logo" width="30%" />
         </div>
 
@@ -59,7 +55,7 @@ const navigate = useNavigate();
         </Form>
         </FormContainer>
     </>) : (<>
-    
+      <h1>You are in the wrong place, please leave!</h1>
     </>)
   );
 };

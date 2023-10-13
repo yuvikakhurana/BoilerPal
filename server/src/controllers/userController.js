@@ -14,6 +14,14 @@ const authUser = asyncHandler(async (req, res) => {
   
     const user = await User.findOne({ email });
     let verifyToken;
+
+    if (user && (await user.matchPassword(password))) {
+        generateJWT(res, user._id);
+    } else {
+      res.status(401);
+      throw new Error('Invalid email or password');
+    }
+
     if (!user.verified) {
         verifyToken = await Token.findOne({ userId: user._id });
 			if (!verifyToken) {
@@ -21,25 +29,18 @@ const authUser = asyncHandler(async (req, res) => {
 					userId: user._id,
 					token: crypto.randomBytes(32).toString("hex"),
 				}).save();
-				const url = `${process.env.BASE_URL}users/${user.id}/verify/${verifyToken.token}`;
+				const url = `${process.env.BASE_URL}verify/${user.id}/${verifyToken.token}`;
 				await sendEmail(user.email, "Verify Email", url);
 			}
         res.status(400).send({ message: "An Email sent to your account please verify" });
-    } else {
-        if (user && (await user.matchPassword(password))) {
-            generateJWT(res, user._id);
-            res.status(200);
-            res.json({
-                _id: user._id,
-                name: user.name,
-                email: user.email,
-                verified: user.verified
-            });
-        } else {
-          res.status(401);
-          throw new Error('Invalid email or password');
-        }
     }
+    res.status(200);
+    res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        verified: user.verified
+    });
   });
 
 // @desc    Register a new user
@@ -61,27 +62,33 @@ const registerUser = asyncHandler(async (req, res) => {
         password
     });
 
-    // Sending email verification link
-    const verifyToken = await new verificationToken({
-        userId: user._id,
-        token: crypto.randomBytes(32).toString('hex')
-    }).save();
-    const url = `${process.env.BASE_URL}users/verify/${user.id}/${verifyToken.token}`;
-    await sendEmail(user.email, "Verify Email", url);
-    
-    // Creating JWT and returning newly created user info
-    if (user) {
-        generateJWT(res, user._id);
-        res.status(201).json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            verified: user.verified
-        });
-    } else {
+    if (!user) {
         res.status(400);
         throw new Error('Invalid user data')
     }
+    let verifyToken;
+    // Sending email verification link
+    if (!user.verified) {
+        verifyToken = await Token.findOne({ userId: user._id });
+			if (!verifyToken) {
+				verifyToken = await new Token({
+					userId: user._id,
+					token: crypto.randomBytes(32).toString("hex"),
+				}).save();
+				const url = `${process.env.BASE_URL}verify/${user.id}/${verifyToken.token}`;
+				await sendEmail(user.email, "Verify Email", url);
+			}
+        res.status(400).send({ message: "An Email sent to your account please verify" });
+    }
+    
+    // Creating JWT and returning newly created user info
+    generateJWT(res, user._id);
+    res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        verified: user.verified
+    });
 });
 
 // @desc    Logout user
@@ -150,7 +157,9 @@ const getLinkTokenAndVerify = asyncHandler(async (req, res) => {
     });
     if (!token) return res.status(400).send({ message: "Invalid link" });
 
-    await User.updateOne({ verified: true });
+    user.verified = true;
+    user.save();
+    console.log(user.verified);
     await token.deleteOne();
 
     res.status(200).send({ message: "Email verified successfully" });
