@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import { logout } from '../slices/authSlice.js'
+import { Button } from '@mui/material';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 
 const Header = () => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -59,6 +61,17 @@ const Header = () => {
                   <LinkContainer to='/vending'>
                     <Nav.Link>Vending Machines</Nav.Link>
                   </LinkContainer>
+
+                  <Button
+                    onClick={() => {
+                      window.location.assign("http://localhost:5173/");
+                    }}
+                  >
+                    <ChatBubbleOutlineIcon/>
+                    <pre>
+                       AI_Chat
+                    </pre>
+                  </Button>
                   
                   <NavDropdown title={userInfo.name} id='username'>
                     <LinkContainer to='/profile'>
