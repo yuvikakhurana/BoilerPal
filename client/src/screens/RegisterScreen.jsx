@@ -58,7 +58,7 @@ const RegisterScreen = () => {
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
-      navigate('/');
+      navigate('/dashboard');
     }
   };
 
