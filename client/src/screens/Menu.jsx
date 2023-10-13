@@ -273,7 +273,7 @@ const Menu = () => {
         <br/>
         <Accordion class="accordion" alwaysOpen>
           <Accordion.Item eventKey="0">
-            <Accordion.Header><h6>Wiley</h6></Accordion.Header>
+            <Accordion.Header><h6>Wiley Dining Court</h6></Accordion.Header>
             <Accordion.Body>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -297,7 +297,7 @@ const Menu = () => {
             </Accordion.Body>
           </Accordion.Item>
           <Accordion.Item eventKey="1">
-            <Accordion.Header><h6>Ford</h6></Accordion.Header>
+            <Accordion.Header><h6>Ford Dining Court</h6></Accordion.Header>
             <Accordion.Body>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -321,7 +321,7 @@ const Menu = () => {
             </Accordion.Body>
           </Accordion.Item>
           <Accordion.Item eventKey="2">
-            <Accordion.Header><h6>Earhart</h6></Accordion.Header>
+            <Accordion.Header><h6>Earhart Dining Court</h6></Accordion.Header>
             <Accordion.Body>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -345,7 +345,7 @@ const Menu = () => {
             </Accordion.Body>
           </Accordion.Item>
           <Accordion.Item eventKey="3">
-            <Accordion.Header><h6>Windsor</h6></Accordion.Header>
+            <Accordion.Header><h6>Windsor Dining Court</h6></Accordion.Header>
             <Accordion.Body>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -369,7 +369,7 @@ const Menu = () => {
             </Accordion.Body>
           </Accordion.Item>
           <Accordion.Item eventKey="4">
-            <Accordion.Header><h6>Hillenbrand</h6></Accordion.Header>
+            <Accordion.Header><h6>Hillenbrand Dining Court</h6></Accordion.Header>
             <Accordion.Body>
               <Accordion>
                 <Accordion.Item eventKey="0">
