@@ -8,6 +8,7 @@ import Data3 from "./Earhart";
 import Data5 from "./Windsor";
 import Buttons from "./Buttons";
 import axios from "axios";
+import Fade from "react-reveal/Fade";
 
 const Menu = () => {
   function getMenu(Location) {
@@ -262,119 +263,121 @@ const Menu = () => {
   return (
     <div class="container-menu">
       {console.log(getMenu("Earhart"))}
-      <Accordion class="accordion" alwaysOpen>
-        <Accordion.Item eventKey="0">
-          <Accordion.Header>Wiley</Accordion.Header>
-          <Accordion.Body>
-            <Accordion>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Menu</Accordion.Header>
-                <Accordion.Body>
-                  <div className="container-fluid">
-                    <div className="row">
-                      <Buttons
-                        filterItem={filterItem}
-                        setItem={setItem}
-                        menuItems={[
-                          ...new Set(Data.map((Val) => Val.MealTime)),
-                        ]}
-                      />
-                      <Card item={item} />
+      <Fade left>
+        <Accordion class="accordion" alwaysOpen>
+          <Accordion.Item eventKey="0">
+            <Accordion.Header><h6>Wiley</h6></Accordion.Header>
+            <Accordion.Body>
+              <Accordion>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Menu</Accordion.Header>
+                  <Accordion.Body>
+                    <div className="container-fluid">
+                      <div className="row">
+                        <Buttons
+                          filterItem={filterItem}
+                          setItem={setItem}
+                          menuItems={[
+                            ...new Set(Data.map((Val) => Val.MealTime)),
+                          ]}
+                        />
+                        <Card item={item} />
+                      </div>
                     </div>
-                  </div>
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="1">
-          <Accordion.Header>Ford</Accordion.Header>
-          <Accordion.Body>
-            <Accordion>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Menu</Accordion.Header>
-                <Accordion.Body>
-                  <div className="container-fluid">
-                    <div className="row">
-                      <Buttons
-                        filterItem={filterItem2}
-                        setItem={setItem2}
-                        menuItems={[
-                          ...new Set(Data2.map((Val) => Val.MealTime)),
-                        ]}
-                      />
-                      <Card item={item2} />
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="1">
+            <Accordion.Header><h6>Ford</h6></Accordion.Header>
+            <Accordion.Body>
+              <Accordion>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Menu</Accordion.Header>
+                  <Accordion.Body>
+                    <div className="container-fluid">
+                      <div className="row">
+                        <Buttons
+                          filterItem={filterItem2}
+                          setItem={setItem2}
+                          menuItems={[
+                            ...new Set(Data2.map((Val) => Val.MealTime)),
+                          ]}
+                        />
+                        <Card item={item2} />
+                      </div>
                     </div>
-                  </div>
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="2">
-          <Accordion.Header>Earhart</Accordion.Header>
-          <Accordion.Body>
-            <Accordion>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Menu</Accordion.Header>
-                <Accordion.Body>
-                  <div className="container-fluid">
-                    <div className="row">
-                      <Buttons
-                        filterItem={filterItem3}
-                        setItem={setItem3}
-                        menuItems={[
-                          ...new Set(Data3.map((Val) => Val.MealTime)),
-                        ]}
-                      />
-                      <Card item={item3} />
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="2">
+            <Accordion.Header><h6>Earhart</h6></Accordion.Header>
+            <Accordion.Body>
+              <Accordion>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Menu</Accordion.Header>
+                  <Accordion.Body>
+                    <div className="container-fluid">
+                      <div className="row">
+                        <Buttons
+                          filterItem={filterItem3}
+                          setItem={setItem3}
+                          menuItems={[
+                            ...new Set(Data3.map((Val) => Val.MealTime)),
+                          ]}
+                        />
+                        <Card item={item3} />
+                      </div>
                     </div>
-                  </div>
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="3">
-          <Accordion.Header>Windsor</Accordion.Header>
-          <Accordion.Body>
-            <Accordion>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Menu</Accordion.Header>
-                <Accordion.Body>
-                  <div className="container-fluid">
-                    <div className="row">
-                      <Buttons
-                        filterItem={filterItem5}
-                        setItem={setItem5}
-                        menuItems={[
-                          ...new Set(Data5.map((Val) => Val.MealTime)),
-                        ]}
-                      />
-                      <Card item={item5} />
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="3">
+            <Accordion.Header><h6>Windsor</h6></Accordion.Header>
+            <Accordion.Body>
+              <Accordion>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Menu</Accordion.Header>
+                  <Accordion.Body>
+                    <div className="container-fluid">
+                      <div className="row">
+                        <Buttons
+                          filterItem={filterItem5}
+                          setItem={setItem5}
+                          menuItems={[
+                            ...new Set(Data5.map((Val) => Val.MealTime)),
+                          ]}
+                        />
+                        <Card item={item5} />
+                      </div>
                     </div>
-                  </div>
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          </Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="4">
-          <Accordion.Header>Hillenbrand</Accordion.Header>
-          <Accordion.Body>
-            <Accordion>
-              <Accordion.Item eventKey="0">
-                <Accordion.Header>Menu</Accordion.Header>
-                <Accordion.Body>
-                  <div className="container-fluid">
-                    <div className="row">Closed for the Day!</div>
-                  </div>
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          </Accordion.Body>
-        </Accordion.Item>
-      </Accordion>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </Accordion.Body>
+          </Accordion.Item>
+          <Accordion.Item eventKey="4">
+            <Accordion.Header><h6>Hillenbrand</h6></Accordion.Header>
+            <Accordion.Body>
+              <Accordion>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Menu</Accordion.Header>
+                  <Accordion.Body>
+                    <div className="container-fluid">
+                      <div className="row">Closed for the Day!</div>
+                    </div>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </Accordion.Body>
+          </Accordion.Item>
+        </Accordion>
+      </Fade>
     </div>
   );
 };

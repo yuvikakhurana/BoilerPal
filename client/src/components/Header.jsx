@@ -50,8 +50,8 @@ const Header = () => {
           <Nav className='ms-auto'>
               {valid ? (
                 <>
-                  <LinkContainer to='/dining'>
-                    <Nav.Link>Dining</Nav.Link>
+                  <LinkContainer to='/menu'>
+                    <Nav.Link>Dining Menu</Nav.Link>
                   </LinkContainer>
 
                   <LinkContainer to='/floormap'>
@@ -64,7 +64,7 @@ const Header = () => {
 
                   <Button
                     onClick={() => {
-                      window.location.assign("http://localhost:5173/");
+                      window.location.assign("http://localhost:5173/chat");
                     }}
                   >
                     <ChatBubbleOutlineIcon/>

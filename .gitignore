@@ -1,5 +1,7 @@
 client/node_modules
 server/node_modules
+chat-app/client-vite-project/node_modules
+chat-app/server-vite-project/node_modules
 client/.env
 server/.env
 .DS_Store
