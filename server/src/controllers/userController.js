@@ -125,6 +125,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     if (user) {
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
+        user.verified = true;
         
         if (req.body.password) {
             user.password = req.body.password;
@@ -135,8 +136,9 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         res.status(200).json({
             _id: updatedUser._id,
             name: updatedUser.name,
-            email: updatedUser.email
-        });
+            email: updatedUser.email,
+            verified: updatedUser.verified
+        })
     } else {
         res.status(404);
         throw new Error('User not found');

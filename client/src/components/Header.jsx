@@ -23,7 +23,7 @@ const Header = () => {
       console.log(err);
     }
   }
-  const valid = userInfo && userInfo.verified;
+  const valid = (userInfo !== null) && userInfo.verified;
   {/* Need to clean up this code, this ugly asl */}
   {/* Does work tho */}
   return (
