@@ -1,17 +1,28 @@
 import express from "express";
-const router = express.Router();
 import {
     authUser,
     registerUser,
     logoutUser,
     getUserProfile,
-    updateUserProfile
+    updateUserProfile,
+    getLinkTokenAndVerify,
+    sendForgotPasswordLink,
+    verifyForgotPasswordLink,
+    setNewPassword
 } from "../controllers/userController.js";
-import { protect } from '../middleware/authMiddleware.js';
+import { protect } from '../middleware/apiProtectionMiddleware.js';
 
-router.post('/', registerUser);
-router.post('/auth', authUser);
-router.post('/logout', protect, logoutUser);
-router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
+// Initialize router
+const userRoutes = express.Router();
 
-export default router;
+// Different routes
+// IMPORTANT: Add protect to second arguement to protect api endpoint (User must be logged in)
+userRoutes.post('/', registerUser);
+userRoutes.post('/auth', authUser);
+userRoutes.post('/logout', protect, logoutUser);
+userRoutes.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile);
+userRoutes.get('/verify/:id/:token', getLinkTokenAndVerify);
+userRoutes.post('/password-reset', sendForgotPasswordLink);
+userRoutes.route('/password-reset/:id/:token').get(verifyForgotPasswordLink).post(setNewPassword);
+
+export default userRoutes;

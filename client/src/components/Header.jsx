@@ -7,7 +7,7 @@ import { useLogoutMutation } from '../slices/usersApiSlice';
 import { logout } from '../slices/authSlice.js'
 
 const Header = () => {
-  const { userInfo } = useSelector((state) => state.auth)
+  const { userInfo } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,14 +23,14 @@ const Header = () => {
       console.log(err);
     }
   }
-
+  const valid = (userInfo !== null) && userInfo.verified;
   {/* Need to clean up this code, this ugly asl */}
   {/* Does work tho */}
   return (
     <header>
       <Navbar bg='dark' variant='dark' expand='lg' collapseOnSelect>
         <Container>
-          {userInfo ? (
+          {valid ? (
             <>
               <LinkContainer to='/dashboard'>
                 <Navbar.Brand>Boiler Pal</Navbar.Brand>
@@ -46,7 +46,7 @@ const Header = () => {
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
           <Nav className='ms-auto'>
-              {userInfo ? (
+              {valid ? (
                 <>
                   <LinkContainer to='/dining'>
                     <Nav.Link>Dining</Nav.Link>

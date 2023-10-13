@@ -7,8 +7,6 @@ import { toast } from "react-toastify";
 import Loader from "../components/Loader.jsx";
 import { setCredentials } from "../slices/authSlice.js";
 import { useRegisterMutation } from "../slices/usersApiSlice.js";
-import Google from "../google.png";
-import Github from "../github.png";
 import Purdue from "../Purdue.jpg";
 
 const RegisterScreen = () => {
@@ -42,7 +40,7 @@ const RegisterScreen = () => {
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/dashboard");
+      navigate('/dashboard');
     }
   }, [navigate, userInfo]);
 
@@ -57,16 +55,16 @@ const RegisterScreen = () => {
       try {
         const res = await register({ name, email, password }).unwrap();
         dispatch(setCredentials({ ...res }));
-        navigate("/dashboard");
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
+      navigate('/dashboard');
     }
   };
 
   return (
     <FormContainer>
-      <div class="head">
+      <div className="head">
         <h1>Sign Up</h1>
         <img src={Purdue} alt="" className="logo" width="30%" />
       </div>
