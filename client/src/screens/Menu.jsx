@@ -9,6 +9,7 @@ import Data5 from "./Windsor";
 import Buttons from "./Buttons";
 import axios from "axios";
 import Fade from "react-reveal/Fade";
+import TextContent from "../components/TextContent";
 
 const Menu = () => {
   function getMenu(Location) {
@@ -264,6 +265,12 @@ const Menu = () => {
     <div class="container-menu">
       {console.log(getMenu("Earhart"))}
       <Fade left>
+        <TextContent 
+          title="Feeling hungry?"
+          desc=" Grab some food at these locations! (More locations to be added soon...)"
+        />
+        <br/>
+        <br/>
         <Accordion class="accordion" alwaysOpen>
           <Accordion.Item eventKey="0">
             <Accordion.Header><h6>Wiley</h6></Accordion.Header>
