@@ -91,7 +91,7 @@ const MessageFormUI = ({
       </div>
       <Button
         onClick={() => {
-          window.location.assign("https://localhost:3000/");
+          window.location.assign("http://localhost:3000/");
         }}
       >
         Exit
