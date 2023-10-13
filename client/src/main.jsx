@@ -19,6 +19,8 @@ import ProfileScreen from "./screens/ProfileScreen.jsx";
 import Dashboard from "./screens/Dashboard.jsx";
 import Menu from "./screens/Menu.jsx";
 import VerifyAccount from './screens/VerifyAccount.jsx';
+import FloorMap from './screens/FloorMap.jsx';
+import VendingMachine from './screens/VendingMachine.jsx';
 import ForgotPassword from './screens/ForgotPassword.jsx';
 import PasswordReset from './screens/PasswordReset.jsx';
 
@@ -36,6 +38,8 @@ const router = createBrowserRouter(
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/menu" element={<Menu />} />
+        <Route path="/floormap" element={<FloorMap />} />
+        <Route path="/vending" element={<VendingMachine />} />
       </Route>
     </Route>
   )
