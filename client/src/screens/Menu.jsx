@@ -265,15 +265,17 @@ const Menu = () => {
     <div class="container-menu">
       {console.log(getMenu("Earhart"))}
       <Fade left>
-        <TextContent 
+        <TextContent
           title="Feeling hungry?"
           desc=" Grab some food at these locations! (More locations to be added soon...)"
         />
-        <br/>
-        <br/>
+        <br />
+        <br />
         <Accordion class="accordion" alwaysOpen>
           <Accordion.Item eventKey="0">
-            <Accordion.Header><h6>Wiley Dining Court</h6></Accordion.Header>
+            <Accordion.Header>
+              <h6>Wiley Dining Court</h6>
+            </Accordion.Header>
             <Accordion.Body>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -293,11 +295,17 @@ const Menu = () => {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
+                <Accordion.Item>
+                  <Accordion.Header>Reviews</Accordion.Header>
+                  <Accordion.Body>In Development</Accordion.Body>
+                </Accordion.Item>
               </Accordion>
             </Accordion.Body>
           </Accordion.Item>
           <Accordion.Item eventKey="1">
-            <Accordion.Header><h6>Ford Dining Court</h6></Accordion.Header>
+            <Accordion.Header>
+              <h6>Ford Dining Court</h6>
+            </Accordion.Header>
             <Accordion.Body>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -317,11 +325,17 @@ const Menu = () => {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
+                <Accordion.Item>
+                  <Accordion.Header>Reviews</Accordion.Header>
+                  <Accordion.Body>In Development</Accordion.Body>
+                </Accordion.Item>
               </Accordion>
             </Accordion.Body>
           </Accordion.Item>
           <Accordion.Item eventKey="2">
-            <Accordion.Header><h6>Earhart Dining Court</h6></Accordion.Header>
+            <Accordion.Header>
+              <h6>Earhart Dining Court</h6>
+            </Accordion.Header>
             <Accordion.Body>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -341,11 +355,17 @@ const Menu = () => {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
+                <Accordion.Item>
+                  <Accordion.Header>Reviews</Accordion.Header>
+                  <Accordion.Body>In Development</Accordion.Body>
+                </Accordion.Item>
               </Accordion>
             </Accordion.Body>
           </Accordion.Item>
           <Accordion.Item eventKey="3">
-            <Accordion.Header><h6>Windsor Dining Court</h6></Accordion.Header>
+            <Accordion.Header>
+              <h6>Windsor Dining Court</h6>
+            </Accordion.Header>
             <Accordion.Body>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -365,11 +385,17 @@ const Menu = () => {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
+                <Accordion.Item>
+                  <Accordion.Header>Reviews</Accordion.Header>
+                  <Accordion.Body>In Development</Accordion.Body>
+                </Accordion.Item>
               </Accordion>
             </Accordion.Body>
           </Accordion.Item>
           <Accordion.Item eventKey="4">
-            <Accordion.Header><h6>Hillenbrand Dining Court</h6></Accordion.Header>
+            <Accordion.Header>
+              <h6>Hillenbrand Dining Court</h6>
+            </Accordion.Header>
             <Accordion.Body>
               <Accordion>
                 <Accordion.Item eventKey="0">
@@ -379,6 +405,10 @@ const Menu = () => {
                       <div className="row">Closed for the Day!</div>
                     </div>
                   </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item>
+                  <Accordion.Header>Reviews</Accordion.Header>
+                  <Accordion.Body>In Development</Accordion.Body>
                 </Accordion.Item>
               </Accordion>
             </Accordion.Body>
