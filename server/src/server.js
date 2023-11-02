@@ -1,9 +1,12 @@
-import 'dotenv/config'
-import express from 'express';
-import cookieParser from 'cookie-parser';
-import { notFound, errorHandler} from './middleware/errorMiddleware.js';
-import userRoutes from './routes/userRoutes.js'
-import connectMongo from './config/db.js';
+import "dotenv/config";
+import express from "express";
+import cookieParser from "cookie-parser";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import userRoutes from "./routes/userRoutes.js";
+import connectMongo from "./config/db.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+import cors from "cors";
+import Reviews from "./models/reviews.js";
 
 /*
 -> Creates Express application
@@ -20,10 +23,11 @@ Middleware:
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors());
 
 // Set up API route(s)
-app.use('/api/users', userRoutes);
-
+app.use("/api/users", userRoutes);
+app.use("/reviews", reviewRoutes);
 /*
 More Middleware:
 -> 404 not found and error handling middleware: ADD AFTER ROUTE(S)
@@ -35,8 +39,9 @@ app.use(errorHandler);
 // Connects to MongoDB
 connectMongo();
 
+
 // Assuming everything worked, we log the enviorment and port
 app.listen(port, () => {
-    console.log(`Node env: ${process.env.NODE_ENV}`);
-    console.log(`Server started on port ${port}`);
+  console.log(`Node env: ${process.env.NODE_ENV}`);
+  console.log(`Server started on port ${port}`);
 });
