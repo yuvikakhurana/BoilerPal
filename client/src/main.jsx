@@ -23,7 +23,7 @@ import FloorMap from './screens/FloorMap.jsx';
 import VendingMachine from './screens/VendingMachine.jsx';
 import ForgotPassword from './screens/ForgotPassword.jsx';
 import PasswordReset from './screens/PasswordReset.jsx';
-import Reservation from './screens/reservation.jsx';
+import Reservation from './screens/reserve.jsx';
 import Routing from './screens/Routing.jsx';
 
 const router = createBrowserRouter(

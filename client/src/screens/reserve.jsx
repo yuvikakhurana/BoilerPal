@@ -1,15 +1,13 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
-// run npm install react-big-calendar
+import React, { useState, useEffect } from "react";
 import { Calendar, Views, momentLocalizer } from "react-big-calendar";
 import { Modal, Button } from "react-bootstrap";
-// run npm install react-confetti
 import Confetti from "react-confetti";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css"; // Assuming you have this already
 import dummyRooms from "./rooms.js"; // Your room data, assuming you have this already
-console.log(dummyRooms);
+import { useGetRoomsMutation } from "../slices/roomsApiSlice.js";
 const localizer = momentLocalizer(moment);
 
 function Reservation() {
@@ -30,6 +28,13 @@ function Reservation() {
     // console.log(date === selectedDate);
     return start1 < end2 && start2 < end1 && date === selectedDate;
   };
+
+  // eslint-disable-next-line no-unused-vars
+  const [getRooms, { data }] = useGetRoomsMutation();
+  useEffect(() => {
+    getRooms();
+  }, []);
+  console.log(data)
 
   const filterRooms = () => {
     return dummyRooms.rooms.filter((room) => {
