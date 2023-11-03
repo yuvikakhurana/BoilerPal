@@ -80,7 +80,7 @@ NODE_ENV=development
 PORT=5000
 MONGO_URI=mongodb+srv://boilerpalteam:cWMlwvymsTr0qlBc@boilerpal.7xecrsu.mongodb.net/boilerpal?retryWrites=true&w=majority
 JWT_SECRET=abc123
-BASE_URL=http://localhost:3000/api/
+BASE_URL=http://localhost:3000/
 ```
 
 ### Running client and server
