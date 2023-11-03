@@ -70,6 +70,7 @@ const Routing = () => {
   function storePosition(position) {
     var lat = position.coords.latitude;
     var lng = position.coords.longitude;
+    console.log(lat + ": " + lng);
     let m = { "lat": lat, "lng": lng };
     setMiddle(m);
     setRoute();
@@ -117,8 +118,8 @@ const Routing = () => {
     setDirectionsResponse(null);
     setDistance('')
     setDuration('')
-    //window.location.reload(false);
     setRoute();
+    window.location.reload(false);
   }
 
 

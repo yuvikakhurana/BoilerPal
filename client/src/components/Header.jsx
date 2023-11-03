@@ -62,6 +62,10 @@ const Header = () => {
                     <Nav.Link>Vending Machines</Nav.Link>
                   </LinkContainer>
 
+                  <LinkContainer to='/routing'>
+                    <Nav.Link>Routing</Nav.Link>
+                  </LinkContainer>
+
                   <Button
                     onClick={() => {
                       window.location.assign("http://localhost:5173/chat");

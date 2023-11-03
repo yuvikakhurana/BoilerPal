@@ -24,6 +24,7 @@ import VendingMachine from './screens/VendingMachine.jsx';
 import ForgotPassword from './screens/ForgotPassword.jsx';
 import PasswordReset from './screens/PasswordReset.jsx';
 import Reservation from './screens/reservation.jsx';
+import Routing from './screens/routing.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -35,14 +36,13 @@ const router = createBrowserRouter(
       <Route path='/forgotPassword' element={<ForgotPassword />} />
       <Route path='/resetPassword/:id/:token' element={<PasswordReset />} />
       {/* Private Routes */}
-      <Route path="" element={<PrivateRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/floormap" element={<FloorMap />} />
         <Route path="/vending" element={<VendingMachine />} />
         <Route path="/reserve" element={<Reservation />} />
-      </Route>
+        <Route path="/routing" element={<Routing />} />
     </Route>
   )
 );
