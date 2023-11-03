@@ -16,6 +16,7 @@ import Button from "react-bootstrap/esm/Button";
 import Form from "react-bootstrap/Form";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { useSelector } from "react-redux";
+import Modal from "react-bootstrap/Modal";
 
 const Menu = () => {
   function getMenu(Location) {
@@ -535,13 +536,17 @@ const Menu = () => {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item>
+                <Accordion.Item eventKey="18">
                   <Accordion.Header>Reviews</Accordion.Header>
                   <Accordion.Body>
                     <div>
                       <div>
-                        <strong>Average Rating:</strong> {wileyRating} (out of
-                        10)
+                        <strong className="title-rating">
+                          Average Rating:{" "}
+                        </strong>
+                        <strong className="average-rating">
+                          {wileyRating}/10{" "}
+                        </strong>
                       </div>
                       <ProgressBar
                         animated
@@ -552,95 +557,110 @@ const Menu = () => {
                     {wileyReviews.map((object) => {
                       const isUserReview = object.username === userInfo.email;
                       return (
-                        <div>
-                          <Review
-                            username={object.username}
-                            content={object.content}
-                            rating={object.rating}
-                          ></Review>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <h6>
-                              {object.createdAt
-                                .replace("T", " ")
-                                .substring(0, object.createdAt.length - 5)}
-                            </h6>
-                            {isUserReview && (
-                              <div>
-                                <Button
-                                  variant="link"
-                                  onClick={() => handleEditClick(object)}
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  variant="link"
-                                  onClick={() =>
-                                    handleDelete({
-                                      name: "wiley",
-                                      id: object._id,
-                                    })
-                                  }
-                                >
-                                  Delete
-                                </Button>
+                        <div
+                          className="modal"
+                          style={{ display: "block", position: "initial" }}
+                        >
+                          <Modal.Dialog className="full-width-toast mb-0">
+                            <Review
+                              username={object.username}
+                              content={object.content}
+                              rating={object.rating}
+                            ></Review>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <h6 className="time-stamp m-2">
+                                {object.createdAt
+                                  .replace("T", " ")
+                                  .substring(0, object.createdAt.length - 5)}
+                              </h6>
+                              {isUserReview && (
+                                <div>
+                                  <Button
+                                    className="m-2"
+                                    variant="outline-primary"
+                                    size="sm"
+                                    onClick={() => handleEditClick(object)}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    className="m-2"
+                                    size="sm"
+                                    variant="outline-secondary"
+                                    onClick={() =>
+                                      handleDelete({
+                                        name: "wiley",
+                                        id: object._id,
+                                      })
+                                    }
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                            {isEditing && object._id == editId && (
+                              <div className="m-2">
+                                <Form>
+                                  <Form.Group>
+                                    <Form.Label>Review:</Form.Label>
+                                    <Form.Control
+                                      as="textarea"
+                                      rows={3}
+                                      value={editedContent}
+                                      onChange={(e) =>
+                                        setEditedContent(e.target.value)
+                                      }
+                                    />
+                                  </Form.Group>
+                                  <Form.Group>
+                                    <Form.Label>Rating:</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      max="10"
+                                      value={editedRating}
+                                      onChange={(e) => {
+                                        const value = parseInt(
+                                          e.target.value,
+                                          10
+                                        );
+                                        if (value >= 0 && value <= 10) {
+                                          setEditedRating(value);
+                                        }
+                                      }}
+                                      className="rating-width mb-2"
+                                    />
+                                  </Form.Group>
+                                  <Button
+                                    onClick={() =>
+                                      handleEdit({ name: "wiley" })
+                                    }
+                                    className="m-2"
+                                  >
+                                    Edit!
+                                  </Button>
+                                </Form>
                               </div>
                             )}
-                          </div>
-                          {isEditing && object._id == editId && (
-                            <div>
-                              <Form>
-                                <Form.Group>
-                                  <Form.Label>Review:</Form.Label>
-                                  <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    value={editedContent}
-                                    onChange={(e) =>
-                                      setEditedContent(e.target.value)
-                                    }
-                                  />
-                                </Form.Group>
-                                <Form.Group>
-                                  <Form.Label>Rating:</Form.Label>
-                                  <Form.Control
-                                    type="number"
-                                    min="0"
-                                    max="10"
-                                    value={editedRating}
-                                    onChange={(e) => {
-                                      const value = parseInt(
-                                        e.target.value,
-                                        10
-                                      );
-                                      if (value >= 0 && value <= 10) {
-                                        setEditedRating(value);
-                                      }
-                                    }}
-                                  />
-                                </Form.Group>
-                                <Button
-                                  onClick={() => handleEdit({ name: "wiley" })}
-                                >
-                                  Edit!
-                                </Button>
-                              </Form>
-                            </div>
-                          )}
+                          </Modal.Dialog>
                         </div>
                       );
                     })}
-                    <Button onClick={handleAddReview}>Add Review</Button>
+                    <Button onClick={handleAddReview} className="mt-3">
+                      Add Review
+                    </Button>
                     {showReviewForm && (
                       <div>
                         <Form>
                           <Form.Group>
-                            <Form.Label>Review:</Form.Label>
+                            <Form.Label className="mt-2">Review:</Form.Label>
                             <Form.Control
                               as="textarea"
                               rows={3}
@@ -662,6 +682,7 @@ const Menu = () => {
                                   setNewRating(value);
                                 }
                               }}
+                              className="mb-4 rating-width"
                             />
                           </Form.Group>
                           <Button
@@ -702,13 +723,17 @@ const Menu = () => {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item>
+                <Accordion.Item eventKey="19">
                   <Accordion.Header>Reviews</Accordion.Header>
                   <Accordion.Body>
                     <div>
                       <div>
-                        <strong>Average Rating:</strong> {fordRating} (out of
-                        10)
+                        <strong className="title-rating">
+                          Average Rating:
+                        </strong>{" "}
+                        <strong className="average-rating">
+                          {fordRating}/10
+                        </strong>
                       </div>
                       <ProgressBar
                         animated
@@ -719,95 +744,108 @@ const Menu = () => {
                     {fordReviews.map((object) => {
                       const isUserReview = object.username === userInfo.email;
                       return (
-                        <div>
-                          <Review
-                            username={object.username}
-                            content={object.content}
-                            rating={object.rating}
-                          ></Review>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <h6>
-                              {object.createdAt
-                                .replace("T", " ")
-                                .substring(0, object.createdAt.length - 5)}
-                            </h6>
-                            {isUserReview && (
-                              <div>
-                                <Button
-                                  variant="link"
-                                  onClick={() => handleEditClick(object)}
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  variant="link"
-                                  onClick={() =>
-                                    handleDelete({
-                                      name: "ford",
-                                      id: object._id,
-                                    })
-                                  }
-                                >
-                                  Delete
-                                </Button>
+                        <div
+                          className="modal"
+                          style={{ display: "block", position: "initial" }}
+                        >
+                          <Modal.Dialog className="full-width-toast mb-0">
+                            <Review
+                              username={object.username}
+                              content={object.content}
+                              rating={object.rating}
+                            ></Review>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <h6 className="time-stamp m-2">
+                                {object.createdAt
+                                  .replace("T", " ")
+                                  .substring(0, object.createdAt.length - 5)}
+                              </h6>
+                              {isUserReview && (
+                                <div>
+                                  <Button
+                                    className="m-2"
+                                    variant="outline-primary"
+                                    size="sm"
+                                    onClick={() => handleEditClick(object)}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    className="m-2"
+                                    size="sm"
+                                    variant="outline-secondary"
+                                    onClick={() =>
+                                      handleDelete({
+                                        name: "ford",
+                                        id: object._id,
+                                      })
+                                    }
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                            {isEditing && object._id == editId && (
+                              <div className="m-2">
+                                <Form>
+                                  <Form.Group>
+                                    <Form.Label>Review:</Form.Label>
+                                    <Form.Control
+                                      as="textarea"
+                                      rows={3}
+                                      value={editedContent}
+                                      onChange={(e) =>
+                                        setEditedContent(e.target.value)
+                                      }
+                                    />
+                                  </Form.Group>
+                                  <Form.Group>
+                                    <Form.Label>Rating:</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      max="10"
+                                      value={editedRating}
+                                      onChange={(e) => {
+                                        const value = parseInt(
+                                          e.target.value,
+                                          10
+                                        );
+                                        if (value >= 0 && value <= 10) {
+                                          setEditedRating(value);
+                                        }
+                                      }}
+                                      className="rating-width mb-2"
+                                    />
+                                  </Form.Group>
+                                  <Button
+                                    onClick={() => handleEdit({ name: "ford" })}
+                                    className="m-2"
+                                  >
+                                    Edit!
+                                  </Button>
+                                </Form>
                               </div>
                             )}
-                          </div>
-                          {isEditing && object._id == editId && (
-                            <div>
-                              <Form>
-                                <Form.Group>
-                                  <Form.Label>Review:</Form.Label>
-                                  <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    value={editedContent}
-                                    onChange={(e) =>
-                                      setEditedContent(e.target.value)
-                                    }
-                                  />
-                                </Form.Group>
-                                <Form.Group>
-                                  <Form.Label>Rating:</Form.Label>
-                                  <Form.Control
-                                    type="number"
-                                    min="0"
-                                    max="10"
-                                    value={editedRating}
-                                    onChange={(e) => {
-                                      const value = parseInt(
-                                        e.target.value,
-                                        10
-                                      );
-                                      if (value >= 0 && value <= 10) {
-                                        setEditedRating(value);
-                                      }
-                                    }}
-                                  />
-                                </Form.Group>
-                                <Button
-                                  onClick={() => handleEdit({ name: "ford" })}
-                                >
-                                  Edit!
-                                </Button>
-                              </Form>
-                            </div>
-                          )}
+                          </Modal.Dialog>
                         </div>
                       );
                     })}
-                    <Button onClick={handleAddReview}>Add Review</Button>
+                    <Button onClick={handleAddReview} className="mt-3">
+                      Add Review
+                    </Button>
                     {showReviewForm && (
                       <div>
                         <Form>
                           <Form.Group>
-                            <Form.Label>Review:</Form.Label>
+                            <Form.Label className="mt-2">Review:</Form.Label>
                             <Form.Control
                               as="textarea"
                               rows={3}
@@ -829,6 +867,7 @@ const Menu = () => {
                                   setNewRating(value);
                                 }
                               }}
+                              className="mb-4 rating-width"
                             />
                           </Form.Group>
                           <Button
@@ -867,13 +906,17 @@ const Menu = () => {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item>
+                <Accordion.Item eventKey="20">
                   <Accordion.Header>Reviews</Accordion.Header>
                   <Accordion.Body>
                     <div>
                       <div>
-                        <strong>Average Rating:</strong> {earhartRating} (out of
-                        10)
+                        <strong className="title-rating">
+                          Average Rating:
+                        </strong>{" "}
+                        <strong className="average-rating">
+                          {earhartRating}/10
+                        </strong>
                       </div>
                       <ProgressBar
                         animated
@@ -884,97 +927,110 @@ const Menu = () => {
                     {earhartReviews.map((object) => {
                       const isUserReview = object.username === userInfo.email;
                       return (
-                        <div>
-                          <Review
-                            username={object.username}
-                            content={object.content}
-                            rating={object.rating}
-                          ></Review>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <h6>
-                              {object.createdAt
-                                .replace("T", " ")
-                                .substring(0, object.createdAt.length - 5)}
-                            </h6>
-                            {isUserReview && (
-                              <div>
-                                <Button
-                                  variant="link"
-                                  onClick={() => handleEditClick(object)}
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  variant="link"
-                                  onClick={() =>
-                                    handleDelete({
-                                      name: "earhart",
-                                      id: object._id,
-                                    })
-                                  }
-                                >
-                                  Delete
-                                </Button>
+                        <div
+                          className="modal"
+                          style={{ display: "block", position: "initial" }}
+                        >
+                          <Modal.Dialog className="full-width-toast mb-0">
+                            <Review
+                              username={object.username}
+                              content={object.content}
+                              rating={object.rating}
+                            ></Review>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <h6 className="time-stamp m-2">
+                                {object.createdAt
+                                  .replace("T", " ")
+                                  .substring(0, object.createdAt.length - 5)}
+                              </h6>
+                              {isUserReview && (
+                                <div>
+                                  <Button
+                                    className="m-2"
+                                    variant="outline-primary"
+                                    size="sm"
+                                    onClick={() => handleEditClick(object)}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    className="m-2"
+                                    size="sm"
+                                    variant="outline-secondary"
+                                    onClick={() =>
+                                      handleDelete({
+                                        name: "earhart",
+                                        id: object._id,
+                                      })
+                                    }
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                            {isEditing && object._id == editId && (
+                              <div className="m-2">
+                                <Form>
+                                  <Form.Group>
+                                    <Form.Label>Review:</Form.Label>
+                                    <Form.Control
+                                      as="textarea"
+                                      rows={3}
+                                      value={editedContent}
+                                      onChange={(e) =>
+                                        setEditedContent(e.target.value)
+                                      }
+                                    />
+                                  </Form.Group>
+                                  <Form.Group>
+                                    <Form.Label>Rating:</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      max="10"
+                                      value={editedRating}
+                                      onChange={(e) => {
+                                        const value = parseInt(
+                                          e.target.value,
+                                          10
+                                        );
+                                        if (value >= 0 && value <= 10) {
+                                          setEditedRating(value);
+                                        }
+                                      }}
+                                      className="rating-width mb-2"
+                                    />
+                                  </Form.Group>
+                                  <Button
+                                    onClick={() =>
+                                      handleEdit({ name: "earhart" })
+                                    }
+                                    className="m-2"
+                                  >
+                                    Edit!
+                                  </Button>
+                                </Form>
                               </div>
                             )}
-                          </div>
-                          {isEditing && object._id == editId && (
-                            <div>
-                              <Form>
-                                <Form.Group>
-                                  <Form.Label>Review:</Form.Label>
-                                  <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    value={editedContent}
-                                    onChange={(e) =>
-                                      setEditedContent(e.target.value)
-                                    }
-                                  />
-                                </Form.Group>
-                                <Form.Group>
-                                  <Form.Label>Rating:</Form.Label>
-                                  <Form.Control
-                                    type="number"
-                                    min="0"
-                                    max="10"
-                                    value={editedRating}
-                                    onChange={(e) => {
-                                      const value = parseInt(
-                                        e.target.value,
-                                        10
-                                      );
-                                      if (value >= 0 && value <= 10) {
-                                        setEditedRating(value);
-                                      }
-                                    }}
-                                  />
-                                </Form.Group>
-                                <Button
-                                  onClick={() =>
-                                    handleEdit({ name: "earhart" })
-                                  }
-                                >
-                                  Edit!
-                                </Button>
-                              </Form>
-                            </div>
-                          )}
+                          </Modal.Dialog>
                         </div>
                       );
                     })}
-                    <Button onClick={handleAddReview}>Add Review</Button>
+                    <Button onClick={handleAddReview} className="mt-3">
+                      Add Review
+                    </Button>
                     {showReviewForm && (
                       <div>
                         <Form>
                           <Form.Group>
-                            <Form.Label>Review:</Form.Label>
+                            <Form.Label className="mt-2">Review:</Form.Label>
                             <Form.Control
                               as="textarea"
                               rows={3}
@@ -996,6 +1052,7 @@ const Menu = () => {
                                   setNewRating(value);
                                 }
                               }}
+                              className="mb-4 rating-width"
                             />
                           </Form.Group>
                           <Button
@@ -1036,13 +1093,17 @@ const Menu = () => {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item>
+                <Accordion.Item eventKey="17">
                   <Accordion.Header>Reviews</Accordion.Header>
                   <Accordion.Body>
                     <div>
                       <div>
-                        <strong>Average Rating:</strong> {windsorRating} (out of
-                        10)
+                        <strong className="title-rating">
+                          Average Rating:
+                        </strong>{" "}
+                        <strong className="average-rating">
+                          {windsorRating}/10
+                        </strong>
                       </div>
                       <ProgressBar
                         animated
@@ -1053,97 +1114,110 @@ const Menu = () => {
                     {windsorReviews.map((object) => {
                       const isUserReview = object.username === userInfo.email;
                       return (
-                        <div>
-                          <Review
-                            username={object.username}
-                            content={object.content}
-                            rating={object.rating}
-                          ></Review>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <h6>
-                              {object.createdAt
-                                .replace("T", " ")
-                                .substring(0, object.createdAt.length - 5)}
-                            </h6>
-                            {isUserReview && (
-                              <div>
-                                <Button
-                                  variant="link"
-                                  onClick={() => handleEditClick(object)}
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  variant="link"
-                                  onClick={() =>
-                                    handleDelete({
-                                      name: "windsor",
-                                      id: object._id,
-                                    })
-                                  }
-                                >
-                                  Delete
-                                </Button>
+                        <div
+                          className="modal"
+                          style={{ display: "block", position: "initial" }}
+                        >
+                          <Modal.Dialog className="full-width-toast mb-0">
+                            <Review
+                              username={object.username}
+                              content={object.content}
+                              rating={object.rating}
+                            ></Review>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <h6 className="time-stamp m-2">
+                                {object.createdAt
+                                  .replace("T", " ")
+                                  .substring(0, object.createdAt.length - 5)}
+                              </h6>
+                              {isUserReview && (
+                                <div>
+                                  <Button
+                                    className="m-2"
+                                    variant="outline-primary"
+                                    size="sm"
+                                    onClick={() => handleEditClick(object)}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    className="m-2"
+                                    size="sm"
+                                    variant="outline-secondary"
+                                    onClick={() =>
+                                      handleDelete({
+                                        name: "windsor",
+                                        id: object._id,
+                                      })
+                                    }
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                            {isEditing && object._id == editId && (
+                              <div className="m-2">
+                                <Form>
+                                  <Form.Group>
+                                    <Form.Label>Review:</Form.Label>
+                                    <Form.Control
+                                      as="textarea"
+                                      rows={3}
+                                      value={editedContent}
+                                      onChange={(e) =>
+                                        setEditedContent(e.target.value)
+                                      }
+                                    />
+                                  </Form.Group>
+                                  <Form.Group>
+                                    <Form.Label>Rating:</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      max="10"
+                                      value={editedRating}
+                                      onChange={(e) => {
+                                        const value = parseInt(
+                                          e.target.value,
+                                          10
+                                        );
+                                        if (value >= 0 && value <= 10) {
+                                          setEditedRating(value);
+                                        }
+                                      }}
+                                      className="rating-width mb-2"
+                                    />
+                                  </Form.Group>
+                                  <Button
+                                    onClick={() =>
+                                      handleEdit({ name: "windsor" })
+                                    }
+                                    className="m-2"
+                                  >
+                                    Edit!
+                                  </Button>
+                                </Form>
                               </div>
                             )}
-                          </div>
-                          {isEditing && object._id == editId && (
-                            <div>
-                              <Form>
-                                <Form.Group>
-                                  <Form.Label>Review:</Form.Label>
-                                  <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    value={editedContent}
-                                    onChange={(e) =>
-                                      setEditedContent(e.target.value)
-                                    }
-                                  />
-                                </Form.Group>
-                                <Form.Group>
-                                  <Form.Label>Rating:</Form.Label>
-                                  <Form.Control
-                                    type="number"
-                                    min="0"
-                                    max="10"
-                                    value={editedRating}
-                                    onChange={(e) => {
-                                      const value = parseInt(
-                                        e.target.value,
-                                        10
-                                      );
-                                      if (value >= 0 && value <= 10) {
-                                        setEditedRating(value);
-                                      }
-                                    }}
-                                  />
-                                </Form.Group>
-                                <Button
-                                  onClick={() =>
-                                    handleEdit({ name: "windsor" })
-                                  }
-                                >
-                                  Edit!
-                                </Button>
-                              </Form>
-                            </div>
-                          )}
+                          </Modal.Dialog>
                         </div>
                       );
                     })}
-                    <Button onClick={handleAddReview}>Add Review</Button>
+                    <Button onClick={handleAddReview} className="mt-3">
+                      Add Review
+                    </Button>
                     {showReviewForm && (
                       <div>
                         <Form>
                           <Form.Group>
-                            <Form.Label>Review:</Form.Label>
+                            <Form.Label className="mt-2">Review:</Form.Label>
                             <Form.Control
                               as="textarea"
                               rows={3}
@@ -1165,6 +1239,7 @@ const Menu = () => {
                                   setNewRating(value);
                                 }
                               }}
+                              className="mb-4 rating-width"
                             />
                           </Form.Group>
                           <Button
@@ -1196,13 +1271,17 @@ const Menu = () => {
                     </div>
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item>
+                <Accordion.Item eventKey="21">
                   <Accordion.Header>Reviews</Accordion.Header>
                   <Accordion.Body>
                     <div>
                       <div>
-                        <strong>Average Rating:</strong> {hillyRating} (out of
-                        10)
+                        <strong className="title-rating">
+                          Average Rating:
+                        </strong>{" "}
+                        <strong className="average-rating">
+                          {hillyRating}/10
+                        </strong>
                       </div>
                       <ProgressBar
                         animated
@@ -1213,95 +1292,110 @@ const Menu = () => {
                     {hillyReviews.map((object) => {
                       const isUserReview = object.username === userInfo.email;
                       return (
-                        <div>
-                          <Review
-                            username={object.username}
-                            content={object.content}
-                            rating={object.rating}
-                          ></Review>
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <h6>
-                              {object.createdAt
-                                .replace("T", " ")
-                                .substring(0, object.createdAt.length - 5)}
-                            </h6>
-                            {isUserReview && (
-                              <div>
-                                <Button
-                                  variant="link"
-                                  onClick={() => handleEditClick(object)}
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  variant="link"
-                                  onClick={() =>
-                                    handleDelete({
-                                      name: "hilly",
-                                      id: object._id,
-                                    })
-                                  }
-                                >
-                                  Delete
-                                </Button>
+                        <div
+                          className="modal"
+                          style={{ display: "block", position: "initial" }}
+                        >
+                          <Modal.Dialog className="full-width-toast mb-0">
+                            <Review
+                              username={object.username}
+                              content={object.content}
+                              rating={object.rating}
+                            ></Review>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <h6 className="time-stamp m-2">
+                                {object.createdAt
+                                  .replace("T", " ")
+                                  .substring(0, object.createdAt.length - 5)}
+                              </h6>
+                              {isUserReview && (
+                                <div>
+                                  <Button
+                                    className="m-2"
+                                    variant="outline-primary"
+                                    size="sm"
+                                    onClick={() => handleEditClick(object)}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    className="m-2"
+                                    size="sm"
+                                    variant="outline-secondary"
+                                    onClick={() =>
+                                      handleDelete({
+                                        name: "hilly",
+                                        id: object._id,
+                                      })
+                                    }
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                            {isEditing && object._id == editId && (
+                              <div className="m-2">
+                                <Form>
+                                  <Form.Group>
+                                    <Form.Label>Review:</Form.Label>
+                                    <Form.Control
+                                      as="textarea"
+                                      rows={3}
+                                      value={editedContent}
+                                      onChange={(e) =>
+                                        setEditedContent(e.target.value)
+                                      }
+                                    />
+                                  </Form.Group>
+                                  <Form.Group>
+                                    <Form.Label>Rating:</Form.Label>
+                                    <Form.Control
+                                      type="number"
+                                      min="0"
+                                      max="10"
+                                      value={editedRating}
+                                      onChange={(e) => {
+                                        const value = parseInt(
+                                          e.target.value,
+                                          10
+                                        );
+                                        if (value >= 0 && value <= 10) {
+                                          setEditedRating(value);
+                                        }
+                                      }}
+                                      className="rating-width mb-2"
+                                    />
+                                  </Form.Group>
+                                  <Button
+                                    onClick={() =>
+                                      handleEdit({ name: "hilly" })
+                                    }
+                                    className="m-2"
+                                  >
+                                    Edit!
+                                  </Button>
+                                </Form>
                               </div>
                             )}
-                          </div>
-                          {isEditing && object._id == editId && (
-                            <div>
-                              <Form>
-                                <Form.Group>
-                                  <Form.Label>Review:</Form.Label>
-                                  <Form.Control
-                                    as="textarea"
-                                    rows={3}
-                                    value={editedContent}
-                                    onChange={(e) =>
-                                      setEditedContent(e.target.value)
-                                    }
-                                  />
-                                </Form.Group>
-                                <Form.Group>
-                                  <Form.Label>Rating:</Form.Label>
-                                  <Form.Control
-                                    type="number"
-                                    min="0"
-                                    max="10"
-                                    value={editedRating}
-                                    onChange={(e) => {
-                                      const value = parseInt(
-                                        e.target.value,
-                                        10
-                                      );
-                                      if (value >= 0 && value <= 10) {
-                                        setEditedRating(value);
-                                      }
-                                    }}
-                                  />
-                                </Form.Group>
-                                <Button
-                                  onClick={() => handleEdit({ name: "hilly" })}
-                                >
-                                  Edit!
-                                </Button>
-                              </Form>
-                            </div>
-                          )}
+                          </Modal.Dialog>
                         </div>
                       );
                     })}
-                    <Button onClick={handleAddReview}>Add Review</Button>
+                    <Button onClick={handleAddReview} className="mt-3">
+                      Add Review
+                    </Button>
                     {showReviewForm && (
                       <div>
                         <Form>
                           <Form.Group>
-                            <Form.Label>Review:</Form.Label>
+                            <Form.Label className="mt-2">Review:</Form.Label>
                             <Form.Control
                               as="textarea"
                               rows={3}
@@ -1323,6 +1417,7 @@ const Menu = () => {
                                   setNewRating(value);
                                 }
                               }}
+                              className="mb-4 rating-width"
                             />
                           </Form.Group>
                           <Button

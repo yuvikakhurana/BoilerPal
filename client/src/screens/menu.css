@@ -1,12 +1,49 @@
 .container-menu {
-    margin-top: 50px;
+  margin-top: 50px;
 }
 
 .buttons {
-    margin-top: 15px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content:center;
-    align-items: space-around;
+  margin-top: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: space-around;
+}
+
+.full-width-toast {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0; /* Optional: Remove border radius for a full-width appearance */
+}
+
+.italic-blue {
+  font-style: italic;
+  color: #2c3643;
+  font-weight: 300;
+}
+
+.rating-highlight {
+  font-size: medium;
+  color: darkred;
+}
+
+.time-stamp {
+  font-size: small;
+  font-style: italic;
+  font-weight: 200;
+}
+
+.average-rating {
+  color: #AA336A;
+  font-size: larger;
+}
+
+.title-rating {
+  font-style: italic;
+  font-weight: 200;
+}
+
+.rating-width {
+  width: 20%;
 }
