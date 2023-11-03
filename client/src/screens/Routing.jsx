@@ -23,6 +23,9 @@ const Routing = () => {
   const [thread, setThread] = useState(null);
 
   const handleClick = () => {
+    if (middle == null || destiantionRef.current.value === "") {
+      return;
+    }
     if (buttonColor === 'blue') {
       setButtonText('Cancel');
       setButtonColor('red');
