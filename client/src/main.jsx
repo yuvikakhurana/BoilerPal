@@ -24,6 +24,8 @@ import VendingMachine from './screens/VendingMachine.jsx';
 import ForgotPassword from './screens/ForgotPassword.jsx';
 import PasswordReset from './screens/PasswordReset.jsx';
 import Reservation from './screens/reservation.jsx';
+import BusSchedules from './screens/BusSchedules.jsx'
+import RoutePlanner from "./screens/RoutePlanner.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,6 +44,8 @@ const router = createBrowserRouter(
         <Route path="/floormap" element={<FloorMap />} />
         <Route path="/vending" element={<VendingMachine />} />
         <Route path="/reserve" element={<Reservation />} />
+        <Route path="/bustimes" element={<BusSchedules />} />
+        <Route path="/routeplan" element={<RoutePlanner />} />
       </Route>
     </Route>
   )

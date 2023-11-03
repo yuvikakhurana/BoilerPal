@@ -62,6 +62,14 @@ const Header = () => {
                     <Nav.Link>Vending Machines</Nav.Link>
                   </LinkContainer>
 
+                  <LinkContainer to='/bustimes'>
+                    <Nav.Link>Bus Schedule</Nav.Link>
+                  </LinkContainer>
+
+                  <LinkContainer to='/routeplan'>
+                    <Nav.Link>Route Planner</Nav.Link>
+                  </LinkContainer>
+
                   <Button
                     onClick={() => {
                       window.location.assign("http://localhost:5173/chat");
