@@ -23,9 +23,6 @@ const Routing = () => {
   const [thread, setThread] = useState(null);
 
   const handleClick = () => {
-    if (middle == null || destiantionRef.current.value === "") {
-      return;
-    }
     if (buttonColor === 'blue') {
       setButtonText('Cancel');
       setButtonColor('red');
@@ -56,7 +53,6 @@ const Routing = () => {
 
 
   function calculateRoute() {
-    console.log("route")
     if (navigator.geolocation) {
       const position = navigator.geolocation.getCurrentPosition(storePosition);
     } else {
@@ -92,6 +88,7 @@ const Routing = () => {
       destination: destiantionRef.current.value,
       travelMode: selectedMode,
     });
+    console.log(destiantionRef.current.value)
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
