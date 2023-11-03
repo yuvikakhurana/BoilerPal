@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React, { useState } from "react";
 import { Form, Col } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
@@ -119,6 +120,7 @@ const parseClassesWithRecurrence = (classes) => {
 
 const MyCalendarComponent = () => {
   const [showEditModal, setShowEditModal] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [events, setEvents] = useState(parseEvents(user));
   const [showClassModal, setShowClassModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -173,7 +175,7 @@ const MyCalendarComponent = () => {
       openEditClass(event);
       setShowDetailsModal(false);
     } else if (event.type === "Event") {
-      openEditEvent(event);
+      //openEditEvent(event);
       setShowDetailsModal(false);
     }
   };
