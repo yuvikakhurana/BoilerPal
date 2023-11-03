@@ -15,26 +15,26 @@ const center = {
 };
 
 const Routing = () => {
-  const [distance, setDistance] = useState('');
-  const [duration, setDuration] = useState('');
+  const [distance, setDistance] = useState("");
+  const [duration, setDuration] = useState("");
   const [selectedMode, setSelectedMode] = useState("DRIVING");
-  const [buttonText, setButtonText] = useState('Route');
-  const [buttonColor, setButtonColor] = useState('blue');
+  const [buttonText, setButtonText] = useState("Route");
+  const [buttonColor, setButtonColor] = useState("blue");
   const [thread, setThread] = useState(null);
 
   const handleClick = () => {
     if (middle == null || destiantionRef.current.value === "") {
       return;
     }
-    if (buttonColor === 'blue') {
-      setButtonText('Cancel');
-      setButtonColor('red');
+    if (buttonColor === "blue") {
+      setButtonText("Cancel");
+      setButtonColor("red");
       const interval = setInterval(calculateRoute, 10000);
       console.log(interval);
       setThread(interval);
     } else {
-      setButtonText('Route');
-      setButtonColor('blue');
+      setButtonText("Route");
+      setButtonColor("blue");
       endRoute();
     }
   };
@@ -53,8 +53,6 @@ const Routing = () => {
     libraries: ["places", "drawing"],
   });
 
-
-
   function calculateRoute() {
     if (navigator.geolocation) {
       const position = navigator.geolocation.getCurrentPosition(storePosition);
@@ -63,14 +61,12 @@ const Routing = () => {
     }
   }
 
-
-
   const [middle, setMiddle] = useState(null);
   function storePosition(position) {
     var lat = position.coords.latitude;
     var lng = position.coords.longitude;
     console.log(lat + ": " + lng);
-    let m = { "lat": lat, "lng": lng };
+    let m = { lat: lat, lng: lng };
     setMiddle(m);
     setRoute();
   }
@@ -79,7 +75,6 @@ const Routing = () => {
   const [directionsResponse, setDirectionsResponse] = useState(null);
 
   const destiantionRef = useRef();
-
 
   async function setRoute() {
     if (middle == null || destiantionRef.current.value === "") {
@@ -91,7 +86,7 @@ const Routing = () => {
       destination: destiantionRef.current.value,
       travelMode: selectedMode,
     });
-    console.log(destiantionRef.current.value)
+    console.log(destiantionRef.current.value);
     setDirectionsResponse(results);
     setDistance(results.routes[0].legs[0].distance.text);
     setDuration(results.routes[0].legs[0].duration.text);
@@ -100,29 +95,25 @@ const Routing = () => {
     }
   }
 
-
   function clearRoute() {
     setMap(null);
-    setDistance('')
-    setDuration('')
-    setDirectionsResponse(null)
+    setDistance("");
+    setDuration("");
+    setDirectionsResponse(null);
     window.location.reload(false);
     destiantionRef.current.value = "";
   }
 
-
   function changeMode(value) {
-    setSelectedMode(value)
+    setSelectedMode(value);
     if (middle == null || destiantionRef.current.value === "") {
       return;
     }
     setDirectionsResponse(null);
-    setDistance('')
-    setDuration('')
+    setDistance("");
+    setDuration("");
     setRoute();
   }
-
-
 
   return isLoaded ? (
     <>
@@ -143,7 +134,7 @@ const Routing = () => {
             <button
               type="submit"
               name="submit"
-              className="btn btn-primary"
+              className="btn btn1 btn-primary"
               onClick={calculateRoute}
             >
               Search
@@ -153,7 +144,7 @@ const Routing = () => {
             <button
               type="submit"
               name="clear"
-              className="btn btn-danger"
+              className="btn btn1 btn-danger"
               onClick={clearRoute}
             >
               Clear
@@ -161,7 +152,10 @@ const Routing = () => {
           </div>
           <div>
             <label>Select Mode of Transportation:</label>
-            <select value={selectedMode} onChange={(e) => changeMode(e.target.value)}>
+            <select
+              value={selectedMode}
+              onChange={(e) => changeMode(e.target.value)}
+            >
               <option value="DRIVING">Driving</option>
               <option value="BICYCLING">Bicycling</option>
               <option value="TRANSIT">Transit</option>
@@ -194,7 +188,6 @@ const Routing = () => {
           mapTypeControl: false,
           fullscreenControl: false,
         }}
-
         onLoad={(map) => setMap(map)}
         onUnmount={() => setMap(null)}
       >
@@ -207,6 +200,6 @@ const Routing = () => {
   ) : (
     <></>
   );
-}
+};
 
 export default Routing;
