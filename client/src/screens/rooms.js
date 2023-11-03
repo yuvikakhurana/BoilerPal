@@ -1,5 +1,3 @@
-// Generating dummy data for rooms for 3 campus buildings
-
 import moment from 'moment';
 
 function generateRandomRooms() {
