@@ -106,6 +106,7 @@ const Routing = () => {
     setDistance('')
     setDuration('')
     setDirectionsResponse(null)
+    window.location.reload(false);
     destiantionRef.current.value = "";
   }
 
@@ -119,7 +120,6 @@ const Routing = () => {
     setDistance('')
     setDuration('')
     setRoute();
-    window.location.reload(false);
   }
 
 
