@@ -1,13 +1,13 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Col } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import user from "./user.js";
 import { RRule, RRuleSet, rrulestr } from "rrule";
+import { useGetAllItemsMutation } from "../slices/usersApiSlice.js";
 
 const localizer = momentLocalizer(moment);
 
@@ -19,7 +19,9 @@ const parseEvents = (user) => {
 
   // Parse reservations
   user.reservations.forEach((reservation) => {
-    const [startTime, endTime] = reservation.time_slot.split("-");
+    let [startTime, endTime] = reservation.time_slot.split("-");
+    startTime = startTime.trimEnd();
+    endTime = endTime.trimStart();
     events.push({
       title: `Reservation - ${reservation.building} Room ${reservation.room_num}`,
       start: new Date(`${reservation.date}T${startTime}:00`),
@@ -47,7 +49,9 @@ const parseEvents = (user) => {
 
   // Parse events
   user.events.forEach((eventItem) => {
-    const [startTime, endTime] = eventItem.time_slot.split("-");
+    let [startTime, endTime] = eventItem.time_slot.split("-");
+    startTime = startTime.trimEnd();
+    endTime = endTime.trimStart();
     events.push({
       title: eventItem.name,
       start: new Date(`${eventItem.date}T${startTime}:00`),
@@ -55,6 +59,7 @@ const parseEvents = (user) => {
       type: "Event",
     });
   });
+  console.log(events)
 
   return events;
 };
@@ -68,20 +73,24 @@ const mapWeekday = {
 };
 
 const createRRuleString = (startDate, timeSlot, byWeekday) => {
-  const [startTime] = timeSlot.split("-");
+  let [startTime] = timeSlot.split("-");
+  let [hour, minute] = startTime.split(":");
+  hour = hour.padStart(2, "0");
+  startTime = `${hour}:${minute}`;
+  startTime = startTime.trimEnd();
   const rruleDate = new Date(`${startDate}T${startTime}:00`);
-
-  // Create a rule set
+ 
+  const untilDate = new Date(rruleDate.getTime() + 4 * 30 * 24 * 60 * 60 * 1000); // Approximately 4 months
+ 
   const ruleSet = new RRuleSet();
-
-  // Add rule to rule set
+ 
   ruleSet.rrule(
     new RRule({
       freq: RRule.WEEKLY,
       interval: 1,
       byweekday: byWeekday.map((day) => mapWeekday[day]),
       dtstart: rruleDate,
-      until: new Date(rruleDate.getTime() + 4 * 30 * 24 * 60 * 60 * 1000), // Approximately 4 months
+      until: untilDate,
     })
   );
 
@@ -120,8 +129,7 @@ const parseClassesWithRecurrence = (classes) => {
 
 const MyCalendarComponent = () => {
   const [showEditModal, setShowEditModal] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [events, setEvents] = useState(parseEvents(user));
+  const [events, setEvents] = useState([]);
   const [showClassModal, setShowClassModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -141,6 +149,17 @@ const MyCalendarComponent = () => {
     endTime: "",
     name: "",
   });
+  const [getItems, { data }] = useGetAllItemsMutation();
+
+  useEffect(() => {
+    getItems();
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      setEvents(parseEvents(data));
+    }
+  }, [data]);
 
   // // Dummy events for the calendar
   // const events = [
