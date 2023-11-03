@@ -7,7 +7,7 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { RRule, RRuleSet, rrulestr } from "rrule";
-import { useGetAllItemsMutation } from "../slices/usersApiSlice.js";
+import { useCreateClassMutation, useCreateEventMutation, useGetAllItemsMutation } from "../slices/usersApiSlice.js";
 
 const localizer = momentLocalizer(moment);
 
@@ -30,18 +30,6 @@ const parseEvents = (user) => {
     });
   });
 
-  // Parse classes
-  // user.classes.forEach((classItem) => {
-  //   classItem.by_weekday.forEach((weekday) => {
-  //     const [startTime, endTime] = classItem.time_slot.split('-');
-  //     events.push({
-  //       title: `Class - ${classItem.name}`,
-  //       start: new Date(`${classItem.date}T${startTime}:00`),
-  //       end: new Date(`${classItem.date}T${endTime}:00`),
-  //       // If by_weekday needs to be considered for recurring events, additional logic would be required here.
-  //     });
-  //   });
-  // });
 
   parseClassesWithRecurrence(user.classes).forEach((event) => {
     events.push(event);
@@ -128,6 +116,8 @@ const parseClassesWithRecurrence = (classes) => {
 };
 
 const MyCalendarComponent = () => {
+  const[createClass] = useCreateClassMutation();
+  const[createEvent] = useCreateEventMutation();
   const [showEditModal, setShowEditModal] = useState(false);
   const [events, setEvents] = useState([]);
   const [showClassModal, setShowClassModal] = useState(false);
@@ -160,6 +150,10 @@ const MyCalendarComponent = () => {
       setEvents(parseEvents(data));
     }
   }, [data]);
+
+  useEffect(() => {
+    getItems();
+  }, [events]);
 
   // // Dummy events for the calendar
   // const events = [
@@ -254,16 +248,39 @@ const MyCalendarComponent = () => {
   };
 
   // Submit class form
-  const submitClassForm = () => {
+  const submitClassForm = async () => {
     console.log("Submitting class form:", classForm);
     // You would send this data to your backend API here.
+    console.log(classForm);
+
+    let startTime = classForm.startTime;
+    let endTime = startTime + classForm.durationHours * 60 + classForm.durationMinutes;
+    let days = classForm.recurringDays;
+    let formattedDays = days.map(day => ({ day }));
+    console.log(formattedDays);
+    const newClass = {
+      name: classForm.courseName,
+      date: classForm.date,
+      time_slot: `${startTime}-${endTime}`,
+      by_weekday: JSON.stringify(formattedDays, null, 2),
+      location: classForm.location
+    }
+    await createClass(newClass);
+
     setShowClassModal(false);
   };
 
   // Submit task form
-  const submitTaskForm = () => {
+  const submitTaskForm = async () => {
     console.log("Submitting task form:", taskForm);
     // You would send this data to your backend API here.
+    const newTask = {
+      name: taskForm.name,
+      date: taskForm.date,
+      time_slot: `${taskForm.startTime}-${taskForm.endTime}`,
+    }
+    await createEvent(newTask);
+
     setShowTaskModal(false);
   };
 

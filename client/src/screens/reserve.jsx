@@ -6,7 +6,6 @@ import Confetti from "react-confetti";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css"; // Assuming you have this already
-import dummyRooms from "./rooms.js"; // Your room data, assuming you have this already
 import { useGetRoomsMutation } from "../slices/roomsApiSlice.js";
 const localizer = momentLocalizer(moment);
 import { useCreateReservationMutation } from "../slices/usersApiSlice.js";
