@@ -8,7 +8,19 @@ import {
     getLinkTokenAndVerify,
     sendForgotPasswordLink,
     verifyForgotPasswordLink,
-    setNewPassword
+    setNewPassword,
+    createReservation,
+    deleteReservation,
+    createClass,
+    deleteClass,
+    editClass,
+    createEvent,
+    deleteEvent,
+    editEvent,
+    getReservations,
+    getClasses,
+    getEvents,
+    getAllItems
 } from "../controllers/userController.js";
 import { protect } from '../middleware/apiProtectionMiddleware.js';
 
@@ -24,5 +36,18 @@ userRoutes.route('/profile').get(protect, getUserProfile).put(protect, updateUse
 userRoutes.get('/verify/:id/:token', getLinkTokenAndVerify);
 userRoutes.post('/password-reset', sendForgotPasswordLink);
 userRoutes.route('/password-reset/:id/:token').get(verifyForgotPasswordLink).post(setNewPassword);
+userRoutes.get('/reservation', protect, getReservations);
+userRoutes.post('/reservation', protect, createReservation);
+userRoutes.delete('/reservation', protect, deleteReservation);
+userRoutes.get('/class', protect, getClasses);
+userRoutes.post('/class', protect, createClass);
+userRoutes.delete('/class', protect, deleteClass);
+userRoutes.put('/class', protect, editClass);
+userRoutes.get('/event', protect, getEvents);
+userRoutes.post('/event', protect, createEvent);
+userRoutes.delete('/event', protect, deleteEvent);
+userRoutes.put('/event', protect, editEvent);
+userRoutes.get('/item', protect, getAllItems);
+
 
 export default userRoutes;

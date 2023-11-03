@@ -5,6 +5,7 @@ import User from '../models/userModel.js';
 import Token from '../models/verificationToken.js'
 import sendEmail from '../utils/sendEmail.js'
 import verificationToken from '../models/verificationToken.js';
+import Room from "../models/roomModel.js";
 
 // @desc    Auth user & get token
 // @route   POST /api/users/auth
@@ -266,6 +267,365 @@ const setNewPassword = asyncHandler(async (req, res) => {
 	}
 });
 
+// @desc    Create a new reservation
+// route    POST /api/users/reservation
+// @access  Private
+const createReservation = asyncHandler(async (req, res) => {
+    // Add to user
+    const user = await User.findById(req.user._id);
+    if (!user) {
+       res.status(400);
+       throw new Error('User doesnt exist');
+    }
+    const {date, time_slot, building, room_num} = req.body;
+   
+    if (date && time_slot && building && room_num) {
+       // Check if reservation already exists
+       let isReservationExists = user.reservations.some(reservation => 
+         reservation.date === date && 
+         reservation.time_slot === time_slot && 
+         reservation.building === building && 
+         reservation.room_num === room_num
+       );
+   
+       if (isReservationExists) {
+           res.status(400);
+           throw new Error('Reservation already exists');
+       }
+   
+       let newReservation = {
+           date: date,
+           time_slot: time_slot,
+           building: building,
+           room_num: room_num
+       };
+       user.reservations.push(newReservation);
+       await user.save();
+   
+       // Add to room
+       let room = await Room.findOne({ room_num: room_num });
+       if (room) {
+           // Check if date and time_slot are already reserved
+           let isDateReserved = room.reserved_dates.some(reservedDate => reservedDate.date === date);
+           let isTimeSlotReserved = room.reserved_time_slots.some(reservedTime => reservedTime.time === time_slot);
+   
+           if (isDateReserved || isTimeSlotReserved) {
+               res.status(400);
+               throw new Error('Date and time are already reserved');
+           }
+   
+           room.reserved_dates.push({ date: date });
+           room.reserved_time_slots.push({ time: time_slot });
+           await room.save();
+       } else {
+           res.status(404);
+           throw new Error('Room not found');
+       }
+   
+       res.send('Reservation added successfully');
+    } else {
+       res.status(404);
+       throw new Error('Reservation not found');
+    }
+});
+
+// @desc    Delete a new reservation
+// route    DELETE /api/users/reservation
+// @access  Private
+const deleteReservation = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      res.status(400);
+      throw new Error('User doesnt exist');
+    }
+    const {room_num} = req.body;
+   
+    if (room_num) {
+        let reservation = user.reservations.find(reservation => 
+            reservation.room_num === room_num
+    );
+      if (reservation) {
+        let index = user.reservations.indexOf(reservation);
+        user.reservations.splice(index, 1);
+        await user.save();
+      } else {
+        res.status(404);
+        throw new Error('Reservation not found');
+      }
+   
+      let room = await Room.findOne({ room_num: room_num });
+      if (room) {
+        room.reserved_dates = room.reserved_dates.filter(reservedDate => reservedDate.date !== reservation.date);
+        room.reserved_time_slots = room.reserved_time_slots.filter(reservedTime => reservedTime.time !== reservation.time_slot);
+        await room.save();
+      } else {
+        res.status(404);
+        throw new Error('Room not found');
+      }
+   
+      res.send('Reservation deleted successfully');
+    } else {
+      res.status(404);
+      throw new Error('Reservation not found');
+    }
+});
+
+// @desc    Get all reservations
+// route    GET /api/users/reservation
+// @access  Private
+const getReservations = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    res.status(200).json(user.reservations);
+   });
+   
+// @desc    Create a new class
+// route    POST /api/users/class
+// @access  Private
+const createClass = asyncHandler(async (req, res) => {
+    // Add to user
+    const user = await User.findById(req.user._id);
+    if (!user) {
+       res.status(400);
+       throw new Error('User doesnt exist');
+    }
+    let {name, date, time_slot, recurring_days, location} = req.body;
+    
+    // Convert reccuring_days from strings to arrays
+    recurring_days = JSON.parse(recurring_days);
+
+    if (name && date && time_slot && recurring_days && location) {
+       // Check if Class already exists
+       let isClassExists = user.classes.some(class_v => 
+            class_v.name === name && 
+            class_v.date === date && 
+            class_v.time_slot === time_slot && 
+            class_v.location === location
+       );
+       
+       if (isClassExists) {
+           res.status(400);
+           throw new Error('Class already exists');
+       }
+   
+       let newClass = {
+            name: name,
+            date: date,
+            time_slot: time_slot,
+            recurring_days: recurring_days,
+            location: location
+       };
+       user.classes.push(newClass);
+       await user.save();
+
+       res.send('Class added successfully');
+    } else {
+       res.status(404);
+       throw new Error('Class not found');
+    }
+});
+
+// @desc    Delete a class
+// route    DELETE /api/users/class
+// @access  Private
+const deleteClass = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    const {name} = req.body;
+   
+    if (name) {
+     let classIndex = user.classes.findIndex(cls => cls.name === name);
+   
+     if (classIndex !== -1) {
+      user.classes.splice(classIndex, 1);
+      await user.save();
+      res.send('Class deleted successfully');
+     } else {
+      res.status(404);
+      throw new Error('Class not found');
+     }
+    } else {
+     res.status(404);
+     throw new Error('User not found');
+    }
+});
+
+// @desc    Edit a class
+// route    PUT /api/users/class
+// @access  Private
+const editClass = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    const {name} = req.body;
+   
+    if (name) {
+     let classIndex = user.classes.findIndex(cls => cls.name === name);
+   
+     if (classIndex !== -1) {
+      user.classes[classIndex].name = req.body.new_name || user.classes[classIndex].name;
+      user.classes[classIndex].date = req.body.date || user.classes[classIndex].date;
+      user.classes[classIndex].time_slot = req.body.time_slot || user.classes[classIndex].time_slot;
+      user.classes[classIndex].recurring_days = req.body.recurring_days || user.classes[classIndex].recurring_days;
+      user.classes[classIndex].location = req.body.location || user.classes[classIndex].location;
+      await user.save();
+      res.send('Class updated successfully');
+     } else {
+      res.status(404);
+      throw new Error('Class not found');
+     }
+    } else {
+     res.status(404);
+     throw new Error('User not found');
+    }
+});
+
+// @desc    Get all classes
+// route    GET /api/users/class
+// @access  Private
+const getClasses = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    res.status(200).json(user.classes);
+   });
+   
+// @desc    Create a new event
+// route    POST /api/users/event
+// @access  Private
+const createEvent = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+       res.status(400);
+       throw new Error('User doesnt exist');
+    }
+    let {name, date, time_slot, } = req.body;
+    
+    if (name && date && time_slot) {
+       // Check if Class already exists
+       let isEventsExists = user.events.some(event => 
+            event.name === name && 
+            event.date === date && 
+            event.time_slot === time_slot
+       );
+       
+       if (isEventsExists) {
+           res.status(400);
+           throw new Error('Event already exists');
+       }
+   
+       let newEvent = {
+            name: name,
+            date: date,
+            time_slot: time_slot
+       };
+       user.events.push(newEvent);
+       await user.save();
+
+       res.send('Event added successfully');
+    } else {
+       res.status(404);
+       throw new Error('Event not found');
+    }
+});
+
+// @desc    Delete a event
+// route    DELETE /api/users/event
+// @access  Private
+const deleteEvent = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    const {name} = req.body;
+   
+    if (name) {
+     let eventIndex = user.events.findIndex(evt => evt.name === name);
+   
+     if (eventIndex !== -1) {
+      user.events.splice(eventIndex, 1);
+      await user.save();
+      res.send('Event deleted successfully');
+     } else {
+      res.status(404);
+      throw new Error('Event not found');
+     }
+    } else {
+     res.status(404);
+     throw new Error('User not found');
+    }
+});
+
+// @desc    Edit a event
+// route    PUT /api/users/event
+// @access  Private
+const editEvent = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    const {name} = req.body;
+   
+    if (name) {
+     let eventIndex = user.events.findIndex(evt => evt.name === name);
+   
+     if (eventIndex !== -1) {
+      user.events[eventIndex].name = req.body.new_name || user.events[eventIndex].name;
+      user.events[eventIndex].date = req.body.date || user.events[eventIndex].date;
+      user.events[eventIndex].time_slot = req.body.time_slot || user.events[eventIndex].time_slot;
+      await user.save();
+      res.send('Event updated successfully');
+     } else {
+      res.status(404);
+      throw new Error('Event not found');
+     }
+    } else {
+     res.status(404);
+     throw new Error('Event not found');
+    }
+});
+
+// @desc    Get all events
+// route    GET /api/users/event
+// @access  Private
+const getEvents = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    res.status(200).json(user.events);
+});
+
+// @desc    Get all calender items
+// route    GET /api/users/items
+// @access  Private
+const getAllItems = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    res.status(200).json({
+     events: user.events,
+     classes: user.classes,
+     reservations: user.reservations
+    });
+});
+   
+
 export {
     authUser,
     registerUser,
@@ -275,5 +635,17 @@ export {
     getLinkTokenAndVerify,
     sendForgotPasswordLink,
     verifyForgotPasswordLink,
-    setNewPassword
+    setNewPassword,
+    createReservation,
+    deleteReservation,
+    createClass,
+    deleteClass,
+    editClass,
+    createEvent,
+    deleteEvent,
+    editEvent,
+    getReservations,
+    getClasses,
+    getEvents,
+    getAllItems
 };

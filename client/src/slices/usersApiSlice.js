@@ -44,8 +44,104 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 body: data
             }),
         }),
+        getReservations: builder.mutation({
+            query: () => ({
+                url: `${USERS_URL}/reservation`,
+                method: "GET"
+            }),
+        }),
+        createReservation: builder.mutation({
+            query: (data) => ({
+                url: `&{USERS_URL}/reservation`,
+                method: "POST",
+                body: data
+            }),
+        }),
+        deleteReservation: builder.mutation({
+            query: (data) => ({
+                url: `&{USERS_URL}/reservation`,
+                method: "DELETE",
+                body: data
+            })
+        }),
+        getClasses: builder.mutation({
+            query: () => ({
+                url: `${USERS_URL}/class`,
+                method: "GET"
+            }),
+        }),
+        createClass: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/class`,
+                method: "POST",
+                body: data
+            }),
+        }),
+        deleteClass: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/class`,
+                method: "DELETE",
+                body: data
+            })
+        }),
+        editClass: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/class`,
+                method: "PUT",
+                body: data
+            })
+        }),
+        getEvents: builder.mutation({
+            query: () => ({
+                url: `${USERS_URL}/event`,
+                method: "GET"
+            }),
+        }),
+        createEvent: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/event`,
+                method: "POST",
+                body: data
+            }),
+        }),
+        deleteEvent: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/event`,
+                method: "DELETE",
+                body: data
+            })
+        }),
+        editEvent: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/event`,
+                method: "PUT",
+                body: data
+            })
+        }),
+        getAllItems: builder.mutation({
+            query: () => ({
+                url: `${USERS_URL}/item`,
+                method: "GET"
+            })
+        })
     })
-
 })
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation, useUpdateUserMutation, useSendForgotPasswordMutation, useSetNewPasswordMutation } = usersApiSlice;
+export const {
+    useLoginMutation,
+    useLogoutMutation,
+    useRegisterMutation,
+    useUpdateUserMutation,
+    useSendForgotPasswordMutation,
+    useSetNewPasswordMutation,
+    useGetReservationsMutation,
+    useCreateReservationMutation,
+    useDeleteReservationMutation,
+    useCreateClassMutation,
+    useDeleteClassMutation,
+    useEditClassMutation,
+    useCreateEventMutation,
+    useDeleteEventMutation,
+    useEditEventMutation,
+    useGetAllItemsMutation
+} = usersApiSlice;

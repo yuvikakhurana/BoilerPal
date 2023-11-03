@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import { notFound, errorHandler} from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js'
 import connectMongo from './config/db.js';
+import roomRoutes from './routes/roomRoutes.js';
 
 /*
 -> Creates Express application
@@ -23,6 +24,7 @@ app.use(cookieParser());
 
 // Set up API route(s)
 app.use('/api/users', userRoutes);
+app.use('/api/rooms', roomRoutes);
 
 /*
 More Middleware:

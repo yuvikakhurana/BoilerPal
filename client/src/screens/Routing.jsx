@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import { useRef, useState, React } from "react";
 import "./Routing.css";
 import {
@@ -7,6 +8,7 @@ import {
   Autocomplete,
   DirectionsRenderer,
 } from "@react-google-maps/api";
+// eslint-disable-next-line no-unused-vars
 import { current } from "@reduxjs/toolkit";
 
 const center = {
@@ -58,6 +60,7 @@ const Routing = () => {
   function calculateRoute() {
     console.log("route")
     if (navigator.geolocation) {
+      // eslint-disable-next-line no-unused-vars
       const position = navigator.geolocation.getCurrentPosition(storePosition);
     } else {
       alert("Geolocation is not supported by this browser.");
@@ -76,6 +79,7 @@ const Routing = () => {
     setRoute();
   }
 
+  // eslint-disable-next-line no-unused-vars
   const [map, setMap] = useState(null);
   const [directionsResponse, setDirectionsResponse] = useState(null);
 

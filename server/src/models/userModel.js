@@ -19,7 +19,27 @@ const userSchema = mongoose.Schema({
     verified: {
         type: Boolean,
         default: false
-    }
+    },
+    reservations : [{
+        date: String,
+        time_slot: String,
+        building: String,
+        room_num: String
+    }],
+    classes : [{
+        name: String,
+        date: String,
+        time_slot: String,
+        recurring_days: [{
+            day: String
+        }],
+        location: String,
+    }],
+    events : [{
+        name: String,
+        date: String,
+        time_slot: String,
+    }]
 }, {
     timestamps: true
 });
