@@ -1,9 +1,12 @@
-import 'dotenv/config'
-import express from 'express';
-import cookieParser from 'cookie-parser';
-import { notFound, errorHandler} from './middleware/errorMiddleware.js';
-import userRoutes from './routes/userRoutes.js'
-import connectMongo from './config/db.js';
+import "dotenv/config";
+import express from "express";
+import cookieParser from "cookie-parser";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import userRoutes from "./routes/userRoutes.js";
+import connectMongo from "./config/db.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+import cors from "cors";
+import Reviews from "./models/reviews.js";
 import roomRoutes from './routes/roomRoutes.js';
 
 /*
@@ -21,10 +24,12 @@ Middleware:
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors());
 
 // Set up API route(s)
 app.use('/api/users', userRoutes);
 app.use('/api/rooms', roomRoutes);
+app.use("/reviews", reviewRoutes);
 
 /*
 More Middleware:
@@ -39,6 +44,6 @@ connectMongo();
 
 // Assuming everything worked, we log the enviorment and port
 app.listen(port, () => {
-    console.log(`Node env: ${process.env.NODE_ENV}`);
-    console.log(`Server started on port ${port}`);
+  console.log(`Node env: ${process.env.NODE_ENV}`);
+  console.log(`Server started on port ${port}`);
 });
