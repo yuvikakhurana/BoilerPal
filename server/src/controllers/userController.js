@@ -293,6 +293,8 @@ const createReservation = asyncHandler(async (req, res) => {
            throw new Error('Reservation already exists');
        }
    
+       await sendEmail(user.email, "New Reservation!", "Hi, you have reserved a room!");
+
        let newReservation = {
            date: date,
            time_slot: time_slot,
@@ -392,12 +394,12 @@ const createClass = asyncHandler(async (req, res) => {
        res.status(400);
        throw new Error('User doesnt exist');
     }
-    let {name, date, time_slot, recurring_days, location} = req.body;
+    let {name, date, time_slot, by_weekday, location} = req.body;
     
     // Convert reccuring_days from strings to arrays
-    recurring_days = JSON.parse(recurring_days);
+    by_weekday = JSON.parse(by_weekday);
 
-    if (name && date && time_slot && recurring_days && location) {
+    if (name && date && time_slot && by_weekday && location) {
        // Check if Class already exists
        let isClassExists = user.classes.some(class_v => 
             class_v.name === name && 
@@ -415,7 +417,7 @@ const createClass = asyncHandler(async (req, res) => {
             name: name,
             date: date,
             time_slot: time_slot,
-            recurring_days: recurring_days,
+            by_weekday: by_weekday,
             location: location
        };
        user.classes.push(newClass);
@@ -474,7 +476,7 @@ const editClass = asyncHandler(async (req, res) => {
       user.classes[classIndex].name = req.body.new_name || user.classes[classIndex].name;
       user.classes[classIndex].date = req.body.date || user.classes[classIndex].date;
       user.classes[classIndex].time_slot = req.body.time_slot || user.classes[classIndex].time_slot;
-      user.classes[classIndex].recurring_days = req.body.recurring_days || user.classes[classIndex].recurring_days;
+      user.classes[classIndex].by_weekday = req.body.by_weekday || user.classes[classIndex].by_weekday;
       user.classes[classIndex].location = req.body.location || user.classes[classIndex].location;
       await user.save();
       res.send('Class updated successfully');

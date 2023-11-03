@@ -30,7 +30,7 @@ const userSchema = mongoose.Schema({
         name: String,
         date: String,
         time_slot: String,
-        recurring_days: [{
+        by_weekday: [{
             day: String
         }],
         location: String,
