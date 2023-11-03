@@ -9,6 +9,7 @@ import "bootstrap/dist/css/bootstrap.min.css"; // Assuming you have this already
 import dummyRooms from "./rooms.js"; // Your room data, assuming you have this already
 import { useGetRoomsMutation } from "../slices/roomsApiSlice.js";
 const localizer = momentLocalizer(moment);
+import { useCreateReservationMutation } from "../slices/usersApiSlice.js";
 
 function Reservation() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -21,6 +22,7 @@ function Reservation() {
   const [selectedDate, setSelectedDate] = useState(
     moment().format("YYYY-MM-DD")
   );
+  const[createReservation] = useCreateReservationMutation()
 
   const isOverlapping = (start1, end1, start2, end2, date) => {
     // console.log("date", date);
@@ -34,12 +36,17 @@ function Reservation() {
   useEffect(() => {
     getRooms();
   }, []);
-  console.log(data)
+  //console.log(data)
 
-  const filterRooms = () => {
-    return dummyRooms.rooms.filter((room) => {
-      const conflicts = room.reservedTimeSlots.some((slot, index) => {
-        const [reservedStart, reservedEnd] = slot.split("-");
+  const filterRooms = ()=> {
+    if (!data || !data) return [];
+
+    return data.filter((room) => {
+      //console.log(room);
+      //console.log(room.reserved_time_slots);
+      const conflicts = room.reserved_time_slots.some((slot, index) => {
+        //console.log(slot.time);
+        const [reservedStart, reservedEnd] = slot.time.split("-");
         // console.log("room", room);
         // console.log(
         //   isOverlapping(
@@ -55,7 +62,7 @@ function Reservation() {
           endTime,
           reservedStart,
           reservedEnd,
-          room.reservedDates[index]
+          room.reserved_dates[index].date
         );
       });
 
@@ -75,36 +82,47 @@ function Reservation() {
     return "text-success"; // green for enough
   };
 
-  const handleReserve = (room) => {
+  const handleReserve = async (room) => {
     const confirmMessage = `
-        Do you want to reserve Room ${room.roomNumber} in ${room.building}?
+        Do you want to reserve Room ${room.room_num} in ${room.building}?
         Type: ${room.type}
         Capacity: ${room.capacity}
         Date: ${selectedDate}
         Time Slot: ${startTime} - ${endTime}
     `;
     const userConfirmed = window.confirm(confirmMessage);
-
+  
     if (userConfirmed) {
       // Send request to backend to reserve the room
-      console.log(`Reserving room ${room.roomNumber} in ${room.building}`);
-
+      console.log(`Reserving room ${room.room_num} in ${room.building}`);
+  
+      const reservationData = {
+        room_num: room.room_num,
+        date: selectedDate,
+        time_slot: `${startTime}-${endTime}`,
+        building: room.building
+      }
+      await createReservation(reservationData);
       // Simulate a delay or an asynchronous action like sending a request to the backend
       setTimeout(() => {
         // After successful reservation, show the modal
         setShowSuccessModal(true);
       }, 1000);
+  
+      // Fetch the updated data
+      getRooms();
     } else {
       console.log("User canceled the reservation.");
       // Optional: Add any other logic for when the user cancels the reservation.
     }
   };
+  
 
   const handleViewSlots = (room) => {
-    if (viewingSlotsRoom === room.roomNumber) {
+    if (viewingSlotsRoom === room.room_num) {
       setViewingSlotsRoom(null);
     } else {
-      setViewingSlotsRoom(room.roomNumber);
+      setViewingSlotsRoom(room.room_num);
     }
   };
 
@@ -211,11 +229,11 @@ function Reservation() {
         </div>
         <div className="row">
           {filterRooms().map((room) => (
-            <div key={room.roomNumber} className="col-md-4 mb-3">
+            <div key={room.room_num} className="col-md-4 mb-3">
               <div className="card">
                 <div className="card-body">
                   <h5 className="card-title">
-                    {room.building} - Room {room.roomNumber}
+                    {room.building} - Room {room.room_num}
                   </h5>
                   <p className="card-text">Capacity: {room.capacity}</p>
                   <p className="card-text">Type: {room.type}</p>
@@ -232,16 +250,16 @@ function Reservation() {
                     View Slots
                   </button>
                 </div>
-                {viewingSlotsRoom === room.roomNumber && (
+                {viewingSlotsRoom === room.room_num && (
                   <div className="card-footer">
                     <Calendar
                       localizer={localizer}
-                      events={room.reservedTimeSlots.map((slot, index) => {
-                        const [start, end] = slot.split("-");
+                      events={room.reserved_time_slots.map((slot, index) => {
+                        const [start, end] = slot.time.split("-");
                         const startDateString =
-                          room.reservedDates[index] + " " + start;
+                          room.reserved_dates[index].date + " " + start;
                         const endDateString =
-                          room.reservedDates[index] + " " + end;
+                          room.reserved_dates[index].date + " " + end;
                         return {
                           title: "Reserved",
                           start: new Date(startDateString),

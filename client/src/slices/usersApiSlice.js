@@ -52,14 +52,14 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         }),
         createReservation: builder.mutation({
             query: (data) => ({
-                url: `&{USERS_URL}/reservation`,
+                url: `${USERS_URL}/reservation`,
                 method: "POST",
                 body: data
             }),
         }),
         deleteReservation: builder.mutation({
             query: (data) => ({
-                url: `&{USERS_URL}/reservation`,
+                url: `${USERS_URL}/reservation`,
                 method: "DELETE",
                 body: data
             })
