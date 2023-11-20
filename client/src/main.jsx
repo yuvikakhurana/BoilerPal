@@ -37,7 +37,7 @@ const router = createBrowserRouter(
       <Route path='/forgotPassword' element={<ForgotPassword />} />
       <Route path='/resetPassword/:id/:token' element={<PasswordReset />} />
       {/* Private Routes */}
-      <Route path="" element={<PrivateRoute />}>
+      {/* <Route path="" element={<PrivateRoute />}> */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/menu" element={<Menu />} />
@@ -46,7 +46,7 @@ const router = createBrowserRouter(
         <Route path="/reserve" element={<Reservation />} />
         <Route path="/bustimes" element={<BusSchedules />} />
         <Route path="/routeplan" element={<RoutePlanner />} />
-      </Route>
+      {/* </Route> */}
     </Route>
   )
 );
