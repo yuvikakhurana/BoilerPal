@@ -100,6 +100,52 @@ router.post("/code", async (req, res) => {
   }
 });
 
+router.post("/classes", async (req, res) => {
+  try {
+    const { text, activeChatId } = req.body;
+    // console.log('req.body', req.body);
+
+    //making the API call:
+
+    const response = await openai.chat.completions.create({
+      //refer openai api reference
+      //temperature: more random/ creative vs direct
+      //max-tokens- length of response
+      //see more on guide
+
+      model: "gpt-3.5-turbo",
+      messages: [
+        // this represents the bot and what role they will assume
+        {
+          role: "system",
+          content:
+            "You are an assistant that helps the user add/delete/edit the classes",
+        },
+        //the message the user sends
+        { role: "user", content: text },
+      ],
+    });
+
+    await axios.post(
+      `https://api.chatengine.io/chats/${activeChatId}/messages/`,
+      { text: response.choices[0].message.content },
+      {
+        headers: {
+          "Project-ID": process.env.PROJECT_ID,
+          "User-Name": process.env.BOT_USER_NAME,
+          "User-Secret": process.env.BOT_USER_SECRET,
+        },
+      }
+    );
+
+    res.status(200).json({ text: response.choices[0].message.content });
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
 router.post("/assist", async (req, res) => {
   try {
     const { text } = req.body;
