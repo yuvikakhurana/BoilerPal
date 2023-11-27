@@ -25,6 +25,7 @@ import PasswordReset from './screens/PasswordReset.jsx';
 import Routing from './screens/Routing.jsx';
 import Calendar from './screens/Calendar.jsx';
 import Reservation from "./screens/reserve.jsx";
+import GpaCalc from "./screens/gpaCalc.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -38,6 +39,7 @@ const router = createBrowserRouter(
       {/* Private Routes */}
       <Route path="" element={<PrivateRoute />}>
         <Route path="/dashboard" element={<Calendar />} />
+        <Route path="/gpa-calc" element={<GpaCalc />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/floormap" element={<FloorMap />} />
