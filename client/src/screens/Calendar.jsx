@@ -7,15 +7,23 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { RRule, RRuleSet, rrulestr } from "rrule";
-import { useCreateClassMutation, useCreateEventMutation, useGetAllItemsMutation } from "../slices/usersApiSlice.js";
+import {
+  useCreateClassMutation,
+  useCreateEventMutation,
+  useGetAllItemsMutation,
+  useDeleteClassMutation,
+  useDeleteReservationMutation,
+  useDeleteEventMutation,
+} from "../slices/usersApiSlice.js";
+import { useNavigate } from "react-router-dom";
 
 const localizer = momentLocalizer(moment);
 
 // Function to parse the user data into calendar events
 const parseEvents = (user) => {
   const events = [];
-  console.log(user);
-  console.log(user.reservations);
+  //console.log(user);
+  //console.log(user.reservations);
 
   // Parse reservations
   user.reservations.forEach((reservation) => {
@@ -29,7 +37,6 @@ const parseEvents = (user) => {
       type: "Reservation",
     });
   });
-
 
   parseClassesWithRecurrence(user.classes).forEach((event) => {
     events.push(event);
@@ -47,7 +54,7 @@ const parseEvents = (user) => {
       type: "Event",
     });
   });
-  console.log(events)
+  //console.log(events);
 
   return events;
 };
@@ -66,12 +73,16 @@ const createRRuleString = (startDate, timeSlot, byWeekday) => {
   hour = hour.padStart(2, "0");
   startTime = `${hour}:${minute}`;
   startTime = startTime.trimEnd();
+  //console.log(startTime);
+  //console.log(startDate);
   const rruleDate = new Date(`${startDate}T${startTime}:00`);
- 
-  const untilDate = new Date(rruleDate.getTime() + 4 * 30 * 24 * 60 * 60 * 1000); // Approximately 4 months
- 
+
+  const untilDate = new Date(
+    rruleDate.getTime() + 4 * 30 * 24 * 60 * 60 * 1000
+  ); // Approximately 4 months
+
   const ruleSet = new RRuleSet();
- 
+
   ruleSet.rrule(
     new RRule({
       freq: RRule.WEEKLY,
@@ -116,8 +127,9 @@ const parseClassesWithRecurrence = (classes) => {
 };
 
 const MyCalendarComponent = () => {
-  const[createClass] = useCreateClassMutation();
-  const[createEvent] = useCreateEventMutation();
+  const navigate = useNavigate();
+  const [createClass] = useCreateClassMutation();
+  const [createEvent] = useCreateEventMutation();
   const [showEditModal, setShowEditModal] = useState(false);
   const [events, setEvents] = useState([]);
   const [showClassModal, setShowClassModal] = useState(false);
@@ -168,6 +180,9 @@ const MyCalendarComponent = () => {
 
   const handleClassModal = () => setShowClassModal(!showClassModal);
   const handleTaskModal = () => setShowTaskModal(!showTaskModal);
+  const [deleteClass] = useDeleteClassMutation();
+  const [deleteReservation] = useDeleteReservationMutation();
+  const [deleteTask] = useDeleteEventMutation();
 
   // Handle form changes
   const handleClassFormChange = (e) => {
@@ -218,15 +233,22 @@ const MyCalendarComponent = () => {
     setShowEditModal(false);
   };
 
-  const handleCancelEvent = (event) => {
+  const extractLastNumber = (str) => {
+    const matches = str.match(/\d+/g);
+    return matches ? matches[matches.length - 1] : null;
+  };
+
+  const handleCancelEvent = async (event) => {
     if (event.type === "Reservation") {
-      // API call to cancel reservation
+      console.log("Canceling reservation:", extractLastNumber(event.title));
+      await deleteReservation({room_num: extractLastNumber(event.title)});
     } else if (event.type === "Class") {
-      // API call to cancel class
+      console.log("Canceling class:", event.title.slice(8));
+      await deleteClass({name: event.title.slice(8)});
     } else {
-      // API call to cancel task/event
+      console.log("Canceling task:", event.title);
+      await deleteTask({name: event.title});
     }
-    // ...
   };
 
   const handleTaskFormChange = (e) => {
@@ -254,17 +276,18 @@ const MyCalendarComponent = () => {
     console.log(classForm);
 
     let startTime = classForm.startTime;
-    let endTime = startTime + classForm.durationHours * 60 + classForm.durationMinutes;
+    let endTime =
+      startTime + classForm.durationHours * 60 + classForm.durationMinutes;
     let days = classForm.recurringDays;
-    let formattedDays = days.map(day => ({ day }));
-    console.log(formattedDays);
+    let formattedDays = days.map((day) => ({ day }));
+    //console.log(formattedDays);
     const newClass = {
       name: classForm.courseName,
       date: classForm.date,
       time_slot: `${startTime}-${endTime}`,
       by_weekday: JSON.stringify(formattedDays, null, 2),
-      location: classForm.location
-    }
+      location: classForm.location,
+    };
     await createClass(newClass);
 
     setShowClassModal(false);
@@ -278,7 +301,7 @@ const MyCalendarComponent = () => {
       name: taskForm.name,
       date: taskForm.date,
       time_slot: `${taskForm.startTime}-${taskForm.endTime}`,
-    }
+    };
     await createEvent(newTask);
 
     setShowTaskModal(false);
@@ -295,6 +318,10 @@ const MyCalendarComponent = () => {
     </Button>
   );
 
+  const handleReserveClick = () => {
+    navigate('/reserve');
+  };
+
   return (
     <div className="container">
       <div className="d-flex justify-content-around my-3">
@@ -304,7 +331,7 @@ const MyCalendarComponent = () => {
         <Button variant="secondary" onClick={handleTaskModal}>
           Add a Task/Event
         </Button>
-        <Button variant="success">Reserve a Room</Button>
+        <Button variant="success" onClick={handleReserveClick}>Reserve a Room</Button>
       </div>
 
       <Modal show={showClassModal} onHide={handleClassModal}>

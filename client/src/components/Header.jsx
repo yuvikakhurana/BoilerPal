@@ -66,6 +66,14 @@ const Header = () => {
                     <Nav.Link>Routing</Nav.Link>
                   </LinkContainer>
 
+                  <LinkContainer to='/calendar'>
+                    <Nav.Link>Calendar</Nav.Link>
+                  </LinkContainer>
+
+                  <LinkContainer to='/gpa-calc'>
+                    <Nav.Link>GPA Calculator</Nav.Link>
+                  </LinkContainer>                      
+
                   <Button
                     onClick={() => {
                       window.location.assign("http://localhost:5173/chat");
