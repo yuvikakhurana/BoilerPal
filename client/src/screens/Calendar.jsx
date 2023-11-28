@@ -145,7 +145,7 @@ const MyCalendarComponent = () => {
   };
 
   const todoStyle = {
-    width: "50%"
+    width: "40%"
   };
 
   const [classForm, setClassForm] = useState({
@@ -545,6 +545,7 @@ const MyCalendarComponent = () => {
           startAccessor="start"
           endAccessor="end"
           style={{ height: "100vh", flex: 1 }} // Calendar takes the full width when Todo is not visible
+          onSelectEvent={handleEventClick}
         />
         {isTodoVisible && (
           <div style={todoStyle}>
