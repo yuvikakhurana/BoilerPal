@@ -43,3 +43,7 @@
     display: block;
     margin: auto;
   }
+
+.clear-button {
+    margin-top: 20px;/* Adjust the height as needed */
+  }

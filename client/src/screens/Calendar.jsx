@@ -14,8 +14,11 @@ import {
   useDeleteClassMutation,
   useDeleteReservationMutation,
   useDeleteEventMutation,
+  useEditClassMutation,
+  useEditEventMutation,
 } from "../slices/usersApiSlice.js";
 import { useNavigate } from "react-router-dom";
+import Todo from "./Todo/index.jsx";
 
 const localizer = momentLocalizer(moment);
 
@@ -130,17 +133,25 @@ const MyCalendarComponent = () => {
   const navigate = useNavigate();
   const [createClass] = useCreateClassMutation();
   const [createEvent] = useCreateEventMutation();
-  const [showEditModal, setShowEditModal] = useState(false);
   const [events, setEvents] = useState([]);
   const [showClassModal, setShowClassModal] = useState(false);
   const [showTaskModal, setShowTaskModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [isTodoVisible, setIsTodoVisible] = useState(false);
+
+  const toggleTodoVisibility = () => {
+    setIsTodoVisible((prevState) => !prevState);
+  };
+
+  const todoStyle = {
+    width: "50%"
+  };
+
   const [classForm, setClassForm] = useState({
     date: "",
     startTime: "",
-    durationHours: 1,
-    durationMinutes: 0,
+    endTime: "",
     location: "",
     courseName: "",
     recurringDays: [],
@@ -151,6 +162,23 @@ const MyCalendarComponent = () => {
     endTime: "",
     name: "",
   });
+  const [showEditClassModal, setShowEditClassModal] = useState(false);
+  const [editClassForm, setEditClassForm] = useState({
+    date: "",
+    startTime: "",
+    endTime: "",
+    location: "",
+    courseName: "", // This will be fixed and not editable
+  });
+
+  const [showEditTaskModal, setShowEditTaskModal] = useState(false);
+  const [editTaskForm, setEditTaskForm] = useState({
+    date: "",
+    startTime: "",
+    endTime: "",
+    name: "", // This will be fixed and not editable
+  });
+
   const [getItems, { data }] = useGetAllItemsMutation();
 
   useEffect(() => {
@@ -167,22 +195,13 @@ const MyCalendarComponent = () => {
     getItems();
   }, [events]);
 
-  // // Dummy events for the calendar
-  // const events = [
-  //   {
-  //     title: "Sample Class",
-  //     start: new Date(),
-  //     end: new Date(moment().add(1, "hours")),
-  //     allDay: false,
-  //   },
-  //   // More dummy events...
-  // ];
-
   const handleClassModal = () => setShowClassModal(!showClassModal);
   const handleTaskModal = () => setShowTaskModal(!showTaskModal);
   const [deleteClass] = useDeleteClassMutation();
   const [deleteReservation] = useDeleteReservationMutation();
   const [deleteTask] = useDeleteEventMutation();
+  const [editClass] = useEditClassMutation();
+  const [editTask] = useEditEventMutation();
 
   // Handle form changes
   const handleClassFormChange = (e) => {
@@ -198,41 +217,6 @@ const MyCalendarComponent = () => {
     setShowDetailsModal(true);
   };
 
-  const handleEditEvent = (event) => {
-    if (event.type === "Class") {
-      openEditClass(event);
-      setShowDetailsModal(false);
-    } else if (event.type === "Event") {
-      //openEditEvent(event);
-      setShowDetailsModal(false);
-    }
-  };
-
-  const openEditClass = (event) => {
-    setClassForm({
-      // Assuming the event has the same structure as your class form state
-      date: moment(event.start).format("YYYY-MM-DD"),
-      startTime: moment(event.start).format("HH:mm"),
-      durationHours: moment
-        .duration(moment(event.end).diff(moment(event.start)))
-        .hours(),
-      durationMinutes: moment
-        .duration(moment(event.end).diff(moment(event.start)))
-        .minutes(),
-      location: event.location,
-      courseName: event.title,
-      recurringDays: event.recurringDays || [], // This needs to be extracted from the event if available
-    });
-    setShowEditModal(true);
-  };
-
-  const handleUpdateEvent = () => {
-    console.log("Updated class form data:", classForm);
-    // Here you would put the API call to update the event
-    // After a successful update, you may need to refresh your events in the calendar
-    setShowEditModal(false);
-  };
-
   const extractLastNumber = (str) => {
     const matches = str.match(/\d+/g);
     return matches ? matches[matches.length - 1] : null;
@@ -241,13 +225,16 @@ const MyCalendarComponent = () => {
   const handleCancelEvent = async (event) => {
     if (event.type === "Reservation") {
       console.log("Canceling reservation:", extractLastNumber(event.title));
-      await deleteReservation({room_num: extractLastNumber(event.title)});
+      await deleteReservation({ room_num: extractLastNumber(event.title) });
+      setShowDetailsModal(false);
     } else if (event.type === "Class") {
       console.log("Canceling class:", event.title.slice(8));
-      await deleteClass({name: event.title.slice(8)});
+      await deleteClass({ name: event.title.slice(8) });
+      setShowDetailsModal(false);
     } else {
       console.log("Canceling task:", event.title);
-      await deleteTask({name: event.title});
+      await deleteTask({ name: event.title });
+      setShowDetailsModal(false);
     }
   };
 
@@ -276,9 +263,9 @@ const MyCalendarComponent = () => {
     console.log(classForm);
 
     let startTime = classForm.startTime;
-    let endTime =
-      startTime + classForm.durationHours * 60 + classForm.durationMinutes;
+    let endTime = classForm.endTime;
     let days = classForm.recurringDays;
+    console.log(startTime, endTime);
     let formattedDays = days.map((day) => ({ day }));
     //console.log(formattedDays);
     const newClass = {
@@ -319,21 +306,95 @@ const MyCalendarComponent = () => {
   );
 
   const handleReserveClick = () => {
-    navigate('/reserve');
+    //navigate("/reserve", {target: "_blank"});
+    window.open("/reserve", "_blank");
+  };
+
+  const handleEditClassFormChange = (e) => {
+    const { name, value } = e.target;
+    setEditClassForm({
+      ...editClassForm,
+      [name]: value,
+    });
+  };
+
+  const handleEditTaskFormChange = (e) => {
+    const { name, value } = e.target;
+    setEditTaskForm({
+      ...editTaskForm,
+      [name]: value,
+    });
+  };
+
+  const handleEditEvent = (event) => {
+    if (event.type === "Class") {
+      const [courseName, date, startTime, endTime, location] =
+        extractClassDetails(event);
+      setEditClassForm({
+        courseName,
+        date,
+        startTime,
+        endTime,
+        location,
+      });
+      setShowEditClassModal(true);
+    }
+    if (event.type === "Event") {
+      // Assuming tasks are of type "Event"
+      const taskDetails = extractTaskDetails(event);
+      setEditTaskForm({
+        ...taskDetails,
+        name: taskDetails.name, // Task name is fixed
+      });
+      setShowEditTaskModal(true);
+    }
+  };
+
+  const submitEditClassForm = async () => {
+    const updatedClassData = {
+      name: editClassForm.courseName, // Assuming the backend requires 'new_name'
+      date: editClassForm.date,
+      time_slot: `${editClassForm.startTime}-${editClassForm.endTime}`,
+      location: editClassForm.location,
+    };
+    console.log(updatedClassData);
+    await editClass(updatedClassData);
+    setShowEditClassModal(false);
+    setShowDetailsModal(false);
+    // You may need to refresh the events list here
+  };
+  const extractClassDetails = (event) => {
+    const courseName = event.title.split(" - ")[1];
+    const date = moment(event.start).format("YYYY-MM-DD");
+    const startTime = moment(event.start).format("HH:mm");
+    const endTime = moment(event.end).format("HH:mm");
+    const location = event.location || ""; // Assuming location is a direct field in event
+    return [courseName, date, startTime, endTime, location];
+  };
+
+  const submitEditTaskForm = async () => {
+    const updatedTaskData = {
+      name: editTaskForm.name,
+      date: editTaskForm.date,
+      time_slot: `${editTaskForm.startTime}-${editTaskForm.endTime}`,
+    };
+    // Call the appropriate mutation or function to update the task
+    console.log(updatedTaskData);
+    await editTask(updatedTaskData); // Update this with your actual function/mutation
+    setShowEditTaskModal(false);
+    setShowDetailsModal(false);
+    // Refresh the events list
+  };
+  const extractTaskDetails = (event) => {
+    const name = event.title;
+    const date = moment(event.start).format("YYYY-MM-DD");
+    const startTime = moment(event.start).format("HH:mm");
+    const endTime = moment(event.end).format("HH:mm");
+    return { name, date, startTime, endTime };
   };
 
   return (
     <div className="container">
-      <div className="d-flex justify-content-around my-3">
-        <Button variant="primary" onClick={handleClassModal}>
-          Add a Class
-        </Button>
-        <Button variant="secondary" onClick={handleTaskModal}>
-          Add a Task/Event
-        </Button>
-        <Button variant="success" onClick={handleReserveClick}>Reserve a Room</Button>
-      </div>
-
       <Modal show={showClassModal} onHide={handleClassModal}>
         <Modal.Header closeButton>
           <Modal.Title>Add a Class</Modal.Title>
@@ -365,36 +426,13 @@ const MyCalendarComponent = () => {
                 onChange={handleClassFormChange}
               />
             </Form.Group>
-            <Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>Duration</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="durationHours"
-                  onChange={handleClassFormChange}
-                >
-                  {/* Generate hours options */}
-                  {[...Array(12).keys()].map((hour) => (
-                    <option key={hour} value={hour}>
-                      {hour}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label>Duration (Minutes)</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="durationMinutes"
-                  onChange={handleClassFormChange}
-                >
-                  {[0, 30, 50].map((minute) => (
-                    <option key={minute} value={minute}>
-                      {minute}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+            <Form.Group as={Col}>
+              <Form.Label>End Time</Form.Label>
+              <Form.Control
+                type="time"
+                name="endTime"
+                onChange={handleClassFormChange}
+              />
             </Form.Group>
             <Form.Group>
               <Form.Label>Location</Form.Label>
@@ -472,16 +510,50 @@ const MyCalendarComponent = () => {
         </Modal.Footer>
       </Modal>
 
-      <h2 className="text-center mt-4">Your Schedule all in one place</h2>
+      <h2
+        className="text-center mt-4 mb-20"
+        style={{ marginBottom: "20px", padding: "10px" }}
+      >
+        Your Schedule all in one place
+      </h2>
 
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: "100vh" }}
-        onSelectEvent={handleEventClick}
-      />
+      <div className="d-flex justify-content-around my-3">
+        <Button variant="primary" onClick={handleClassModal}>
+          Add a Class
+        </Button>
+        <Button variant="secondary" onClick={handleTaskModal}>
+          Add a Task/Event
+        </Button>
+        <Button variant="success" onClick={handleReserveClick}>
+          Reserve a Room
+        </Button>
+        <Button variant="info" style = {{color: "white"}} onClick={toggleTodoVisibility}>
+        {isTodoVisible ? "Hide Todos" : "Todos"}
+        </Button>
+        <Form>
+          <Form.Check
+            type="switch"
+            id="email-switch"
+            label="Email Notifications"
+          />
+        </Form>
+      </div>
+      <div style={{ display: "flex" }}>
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: "100vh", flex: 1 }} // Calendar takes the full width when Todo is not visible
+        />
+        {isTodoVisible && (
+          <div style={todoStyle}>
+            {" "}
+            {/* Adjust the width as needed */}
+            <Todo />
+          </div>
+        )}
+      </div>
 
       <Modal show={showDetailsModal} onHide={() => setShowDetailsModal(false)}>
         <Modal.Header closeButton>
@@ -496,10 +568,16 @@ const MyCalendarComponent = () => {
                 <strong>Title:</strong> {selectedEvent.title}
               </p>
               <p>
-                <strong>Start:</strong> {selectedEvent.start.toLocaleString()}
+                <strong>Start:</strong>{" "}
+                {selectedEvent.type === "Class"
+                  ? selectedEvent.start.toLocaleTimeString()
+                  : selectedEvent.start.toLocaleString()}
               </p>
               <p>
-                <strong>End:</strong> {selectedEvent.end.toLocaleString()}
+                <strong>End:</strong>{" "}
+                {selectedEvent.type === "Class"
+                  ? selectedEvent.end.toLocaleTimeString()
+                  : selectedEvent.end.toLocaleString()}
               </p>
               {selectedEvent.location && (
                 <p>
@@ -517,68 +595,127 @@ const MyCalendarComponent = () => {
           >
             Close
           </Button>
-          <Button variant="info" onClick={() => handleEditEvent(selectedEvent)}>
-            Edit
-          </Button>
+          {selectedEvent && selectedEvent.type !== "Reservation" && (
+            <Button
+              variant="info"
+              onClick={() => handleEditEvent(selectedEvent)}
+            >
+              Edit
+            </Button>
+          )}
           <Button
             variant="danger"
             onClick={() => handleCancelEvent(selectedEvent)}
           >
-            Cancel
+            Delete
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+      <Modal
+        show={showEditClassModal}
+        onHide={() => setShowEditClassModal(false)}
+      >
         <Modal.Header closeButton>
-          <Modal.Title>Edit Class/Event</Modal.Title>
+          <Modal.Title>Edit Class - {editClassForm.courseName}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            {/* Add form fields pre-filled with classForm state */}
-            <Form.Group>
-              <Form.Label>Course/Event Name</Form.Label>
+            <Form.Group as={Col}>
+              <Form.Label>Start Date</Form.Label>
               <Form.Control
-                type="text"
-                placeholder="Enter name"
-                name="courseName"
-                value={classForm.courseName}
-                onChange={handleClassFormChange}
+                type="date"
+                name="date"
+                value={editClassForm.date}
+                onChange={handleEditClassFormChange}
               />
             </Form.Group>
+            <Form.Group as={Col}>
+              <Form.Label>Start Time</Form.Label>
+              <Form.Control
+                type="time"
+                name="startTime"
+                value={editClassForm.startTime}
+                onChange={handleEditClassFormChange}
+              />
+            </Form.Group>
+            <Form.Group as={Col}>
+              <Form.Label>End Time</Form.Label>
+              <Form.Control
+                type="time"
+                name="endTime"
+                value={editClassForm.endTime}
+                onChange={handleEditClassFormChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Location</Form.Label>
+              <Form.Control
+                type="text"
+                name="location"
+                value={editClassForm.location}
+                onChange={handleEditClassFormChange}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowEditClassModal(false)}
+          >
+            Close
+          </Button>
+          <Button variant="primary" onClick={submitEditClassForm}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal
+        show={showEditTaskModal}
+        onHide={() => setShowEditTaskModal(false)}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Task - {editTaskForm.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
             <Form.Group as={Col}>
               <Form.Label>Date</Form.Label>
               <Form.Control
                 type="date"
                 name="date"
-                value={classForm.date}
-                onChange={handleClassFormChange}
+                value={editTaskForm.date}
+                onChange={handleEditTaskFormChange}
               />
             </Form.Group>
-            {/* ... include other fields ... */}
-            <Form.Label>Recurring Days</Form.Label>
-            <div>
-              {["M", "T", "W", "R", "F"].map((day) => (
-                <Button
-                  key={day}
-                  variant={
-                    classForm.recurringDays.includes(day)
-                      ? "primary"
-                      : "secondary"
-                  }
-                  onClick={() => handleRecurringDays(day)}
-                  style={{ marginRight: "5px" }}
-                >
-                  {day}
-                </Button>
-              ))}
-            </div>
+            <Form.Group as={Col}>
+              <Form.Label>Start Time</Form.Label>
+              <Form.Control
+                type="time"
+                name="startTime"
+                value={editTaskForm.startTime}
+                onChange={handleEditTaskFormChange}
+              />
+            </Form.Group>
+            <Form.Group as={Col}>
+              <Form.Label>End Time</Form.Label>
+              <Form.Control
+                type="time"
+                name="endTime"
+                value={editTaskForm.endTime}
+                onChange={handleEditTaskFormChange}
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+          <Button
+            variant="secondary"
+            onClick={() => setShowEditTaskModal(false)}
+          >
             Close
           </Button>
-          <Button variant="primary" onClick={() => handleUpdateEvent()}>
+          <Button variant="primary" onClick={submitEditTaskForm}>
             Save Changes
           </Button>
         </Modal.Footer>
