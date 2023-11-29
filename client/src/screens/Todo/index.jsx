@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-//import axios from "../../axios";
+import axios from "axios";
 import Form from "../Form";
-import Key from "../Key";
 import TodoList from "../TodoList";
 import { Container } from "./styles";
 
@@ -25,6 +24,11 @@ function Todo() {
   const addTodo = async (e) => {
     e.preventDefault();
     if (input.length === 0) return null;
+    console.log({
+      ...todos,
+      text: input,
+      completed: false,
+    });
     await axios.post("/todos", [
       {
         ...todos,

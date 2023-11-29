@@ -1,12 +1,12 @@
 import React from "react";
-//import axios from "../../axios";
-import { ListContainer, Row, Text, DeleteIcon } from "./styles";
+import axios from "axios";
+import { ListContainer, Row, Text, DeleteIcon, EditIcon } from "./styles";
 
 function TodoList({ todos, fetchData }) {
-  const updateTodo = async (id) => {
+  const updateTodo = async (text, completed) => {
     try {
-      const response = await axios.put(`/todos/${id}`, {
-        id,
+      const response = await axios.put(`/todos/${text}`, {
+        text, completed
       });
       fetchData();
       return response.data.json;
@@ -15,10 +15,10 @@ function TodoList({ todos, fetchData }) {
     }
   };
 
-  const deleteTodo = async (id) => {
+  const deleteTodo = async (text) => {
     try {
-      const response = await axios.delete(`/todos/${id}`, {
-        id,
+      const response = await axios.delete(`/todos/${text}`, {
+        text,
       });
       fetchData();
       return response.data.json;
@@ -33,17 +33,18 @@ function TodoList({ todos, fetchData }) {
         {todos?.map((todo) => (
           <Row key={todo._id}>
             <Text
-              onClick={() => updateTodo(todo._id)}
+              onClick={() => updateTodo(todo.text, !todo.completed)}
               isCompleted={todo.completed}
             >
               {todo.text}
             </Text>
             <DeleteIcon
               data-testid="close"
-              onClick={() => deleteTodo(todo._id)}
+              onClick={() => deleteTodo(todo.text)}
             >
               X
             </DeleteIcon>
+            <EditIcon onClick={() => handleEditClick(todo)}>Edit</EditIcon> 
           </Row>
         ))}
       </ListContainer>
