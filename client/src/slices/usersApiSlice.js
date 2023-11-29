@@ -123,7 +123,34 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 url: `${USERS_URL}/item`,
                 method: "GET"
             })
-        })
+        }),
+        createTodo: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/todo`,
+                method: "POST",
+                body: data
+            }),
+        }),
+        deleteTodo: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/todo`,
+                method: "DELETE",
+                body: data
+            })
+        }),
+        editTodo: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/todo`,
+                method: "PUT",
+                body: data
+            })
+        }),
+        getTodos: builder.mutation({
+            query: () => ({
+                url: `${USERS_URL}/todo`,
+                method: "GET"
+            })
+        }),
     })
 })
 
@@ -143,5 +170,9 @@ export const {
     useCreateEventMutation,
     useDeleteEventMutation,
     useEditEventMutation,
-    useGetAllItemsMutation
+    useGetAllItemsMutation,
+    useCreateTodoMutation,
+    useDeleteTodoMutation,
+    useEditTodoMutation,
+    useGetTodosMutation
 } = usersApiSlice;
