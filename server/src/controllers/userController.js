@@ -626,6 +626,112 @@ const getAllItems = asyncHandler(async (req, res) => {
      reservations: user.reservations
     });
 });
+
+// @desc    Create a new todo
+// route    POST /api/users/todo
+// @access  Private
+const createTodo = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+       res.status(400);
+       throw new Error('User doesnt exist');
+    }
+    let { text } = req.body;
+    
+    if ( text ) {
+       // Check if Class already exists
+       let isTodoExists = user.todos.some(todo => 
+            todo.text === text
+       );
+       
+       if (isTodoExists) {
+           res.status(400);
+           throw new Error('Todo already exists');
+       }
+   
+       let newTodo = {
+            text: text,
+            completed: false
+       };
+       user.todos.push(newTodo);
+       await user.save();
+
+       res.send('Todo added successfully');
+    } else {
+       res.status(404);
+       throw new Error('Todo not found');
+    }
+});
+
+// @desc    Delete a todo
+// route    DELETE /api/users/todo
+// @access  Private
+const deleteTodo = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    const {text} = req.body;
+    console.log(text)
+   
+    if (text) {
+     let todoIndex = user.todos.findIndex(tdo => tdo.text === text);
+   
+     if (todoIndex !== -1) {
+      user.todos.splice(todoIndex, 1);
+      await user.save();
+      res.send('Todo deleted successfully');
+     } else {
+      res.status(404);
+      throw new Error('Todo not found');
+     }
+    } else {
+     res.status(404);
+     throw new Error('User not found');
+    }
+});
+
+// @desc    Edit a todo
+// route    PUT /api/users/todo
+// @access  Private
+const editTodo = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    const {text} = req.body;
+   
+    if (text) {
+     let todoIndex = user.todos.findIndex(tdo => tdo.text === text);
+   
+     if (todoIndex !== -1) {
+      user.todos[todoIndex].text = req.body.new_text || user.todos[todoIndex].text;
+      user.todos[todoIndex].completed = req.body.completed || user.todos[todoIndex].completed;
+      await user.save();
+      res.send('Todo updated successfully');
+     } else {
+      res.status(404);
+      throw new Error('Todo not found');
+     }
+    } else {
+     res.status(404);
+     throw new Error('User not found');
+    }
+});
+
+// @desc    Get all todos
+// route    GET /api/users/todo
+// @access  Private
+const getTodos = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    res.status(200).json(user.todos);
+});
    
 
 export {
@@ -649,5 +755,9 @@ export {
     getReservations,
     getClasses,
     getEvents,
-    getAllItems
+    getAllItems,
+    createTodo,
+    deleteTodo,
+    editTodo,
+    getTodos
 };
