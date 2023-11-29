@@ -2,15 +2,21 @@ import {
   PaperAirplaneIcon,
   PaperClipIcon,
   XMarkIcon,
+  MicrophoneIcon,
+  StopCircleIcon,
 } from "@heroicons/react/24/solid";
 import React, { useState } from "react";
 import { Button } from "react-chat-engine-advanced";
 import Dropzone from "react-dropzone";
 import { useNavigate } from "react-router-dom";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
 const MessageFormUI = ({
   setAttachment,
   message,
+  setMessage,
   handleChange,
   handleSubmit,
   appendText,
@@ -18,6 +24,25 @@ const MessageFormUI = ({
 }) => {
   const navigate = useNavigate();
   const [preview, setPreview] = useState("");
+  const [isListsening, setIsListening] = useState(false);
+  const handleSpeechOnClick = () => {
+    SpeechRecognition.startListening();
+    setIsListening(true);
+  };
+
+  const handleSpeechOffClick = () => {
+    SpeechRecognition.stopListening();
+    setIsListening(false);
+    setMessage(transcript);
+  };
+
+  const {
+    transcript,
+    //listening,
+    //resetTranscript,
+    //browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
+
   return (
     <div className="message-form-container">
       {preview && (
@@ -77,6 +102,26 @@ const MessageFormUI = ({
               </div>
             )}
           </Dropzone>
+
+          <hr className="vertical-line" />
+          {isListsening && (
+            <img
+              className="message-form-icon-airplane"
+              src="../../../giphy.gif"
+            />
+          )}
+          {isListsening && (
+            <StopCircleIcon
+              className="message-form-icon-airplane"
+              onClick={handleSpeechOffClick}
+            />
+          )}
+          {!isListsening && (
+            <MicrophoneIcon
+              onClick={handleSpeechOnClick}
+              className="message-form-icon-airplane"
+            />
+          )}
 
           <hr className="vertical-line" />
 

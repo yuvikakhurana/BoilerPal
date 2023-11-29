@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import MessageFormUI from "./MessageFormUI";
 import { usePostAiTextMutation } from "@/state/api";
+import { MicrophoneIcon } from "@heroicons/react/24/solid";
 
 const Ai = ({ props, activeChat }) => {
   const [message, setMessage] = useState("");
@@ -46,6 +47,7 @@ const Ai = ({ props, activeChat }) => {
     <MessageFormUI
       setAttachment={setAttachment}
       message={message}
+      setMessage={setMessage}
       handleChange={handleChange}
       handleSubmit={handleSubmit}
     />

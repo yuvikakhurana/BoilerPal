@@ -20,7 +20,11 @@ import {
     getReservations,
     getClasses,
     getEvents,
-    getAllItems
+    getAllItems,
+    createTodo,
+    deleteTodo,
+    editTodo,
+    getTodos
 } from "../controllers/userController.js";
 import { protect } from '../middleware/apiProtectionMiddleware.js';
 
@@ -48,6 +52,10 @@ userRoutes.post('/event', protect, createEvent);
 userRoutes.delete('/event', protect, deleteEvent);
 userRoutes.put('/event', protect, editEvent);
 userRoutes.get('/item', protect, getAllItems);
+userRoutes.post('/todo', protect, createTodo);
+userRoutes.delete('/todo', protect, deleteTodo);
+userRoutes.put('/todo', protect, editTodo);
+userRoutes.get('/todo', protect, getTodos);
 
 
 export default userRoutes;

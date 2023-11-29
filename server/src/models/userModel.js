@@ -39,6 +39,10 @@ const userSchema = mongoose.Schema({
         name: String,
         date: String,
         time_slot: String,
+    }],
+    todos : [{
+        text: String,
+        completed: Boolean,
     }]
 }, {
     timestamps: true
