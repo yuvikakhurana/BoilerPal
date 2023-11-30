@@ -11,182 +11,265 @@ dotenv.config();
 const router = express.Router();
 
 router.post("/text", async (req, res) => {
-  try {
-    const { text, activeChatId } = req.body;
-    // console.log('req.body', req.body);
+  const { text, activeChatId } = req.body;
+  //console.log('req.body', req.body);
 
-    //making the API call:
-    console.log("text", text);
+  //making the API call:
+  console.log("text", text);
 
-    const response = await openai.chat.completions.create({
-      //refer openai api reference
-      //temperature: more random/ creative vs direct
-      //max-tokens- length of response
-      //see more on guide
+  const response = await openai.chat.completions.create({
+    //refer openai api reference
+    //temperature: more random/ creative vs direct
+    //max-tokens- length of response
+    //see more on guide
 
-      model: "gpt-3.5-turbo-0613",
-      messages: [
-        // this represents the bot and what role they will assume
-        {
-          role: "system",
-          content:
-            "You are a helpful assistant for Purdue students. Answer the questions being asked using context of Purdue University. You may also need to call functions related to classes and events for some questions. ",
-        },
-        //the message the user sends
-        { role: "user", content: text + "End your reply with an appropriate Purdue phrase or trivia" },
-      ],
-      functions: [
-        {
-          name: "create_event",
-          description:
-            "Creates an event/task using the name, date given, and time interval for that when the user asks to create an event. If the date is not given, it just uses the current date - Nov 30 2023.",
-          parameters: {
-            type: "object",
-            properties: {
-              name: {
-                type: "string",
-                description: "The name of the event/task to be created",
-              },
-              date: {
-                type: "string",
-                description: "The date of the event/task in the format YYYY-MM-DD",
-              },
-              time_slot: {
-                type: "string",
-                description:
-                  "The time interval of the event/task in the format HH:MM-HH:MM in 24 hour format",
-              },
+    model: "gpt-3.5-turbo-0613",
+    messages: [
+      // this represents the bot and what role they will assume
+      {
+        role: "system",
+        content:
+          "You are a helpful assistant for Purdue students. Answer the questions being asked using context of Purdue University. You may also need to call functions related to classes and events for some questions. ",
+      },
+      //the message the user sends
+      {
+        role: "user",
+        content:
+          text + "End your reply with an appropriate Purdue phrase or trivia",
+      },
+    ],
+    functions: [
+      {
+        name: "create_event",
+        description:
+          "Creates an event/task using the name, date given, and time interval for that when the user asks to create an event. If the date is not given, it just uses the current date - Nov 30 2023.",
+        parameters: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string",
+              description: "The name of the event/task to be created",
             },
-            required: ["name", "date", "time_slot"],
-          },
-        },
-        {
-          name: "edit_event",
-          description:
-            "Edits an event/task's time slot or date only if name of event is given. Only name and field to be changed needs to be passed to the function. Convert 12 hour time to 24 hour time.",
-          parameters: {
-            type: "object",
-            properties: {
-              name: {
-                type: "string",
-                description: "The name of the event/task to be edited",
-              },
-              date: {
-                type: "string",
-                description: "The new/original date of the event/task in the format YYYY-MM-DD",
-              },
-              time_slot: {
-                type: "string",
-                description:
-                  "The new/original time interval of the event/task in the format HH:MM-HH:MM in 24 hour format",
-              },
+            date: {
+              type: "string",
+              description:
+                "The date of the event/task in the format YYYY-MM-DD",
             },
-            required: ["name"],
-          },
-        },
-        {
-          name: "delete_event",
-          description:
-            "Deletes an event using the given name",
-          parameters: {
-            type: "object",
-            properties: {
-              name: {
-                type: "string",
-                description: "The name of the event/task to be deleted",
-              },
+            time_slot: {
+              type: "string",
+              description:
+                "The time interval of the event/task in the format HH:MM-HH:MM in 24 hour format",
             },
-            required: ["name"],
           },
-        }
-      ],
-    });
+          required: ["name", "date", "time_slot"],
+        },
+      },
+      {
+        name: "edit_event",
+        description:
+          "Edits an event/task's time slot or date only if name of event is given. Only name and field to be changed needs to be passed to the function. Convert 12 hour time to 24 hour time.",
+        parameters: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string",
+              description: "The name of the event/task to be edited",
+            },
+            date: {
+              type: "string",
+              description:
+                "The new/original date of the event/task in the format YYYY-MM-DD",
+            },
+            time_slot: {
+              type: "string",
+              description:
+                "The new/original time interval of the event/task in the format HH:MM-HH:MM in 24 hour format",
+            },
+          },
+          required: ["name"],
+        },
+      },
+      {
+        name: "delete_event",
+        description: "Deletes an event using the given name",
+        parameters: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string",
+              description: "The name of the event/task to be deleted",
+            },
+          },
+          required: ["name"],
+        },
+      },
+      {
+        name: "create_class",
+        description:
+          "Creates a class using class name, date, time interval, recurring days and location",
+        parameters: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string",
+              description: "The name",
+            },
+            date: {
+              type: "string",
+              description:
+                "The date of first day of the class in the format YYYY-MM-DD",
+            },
+            time_slot: {
+              type: "string",
+              description:
+                "The time interval of the class in the format HH:MM-HH:MM in 24 hour format",
+            },
+            by_weekday: {
+              type: "array",
+              description: "The letters for recurring days of the class in an array in a format ['M', 'T', 'W', 'R', 'F']",
+              items: {
+                "type": "string",
+                "properties": {
+                    "day": {
+                        "type": "string",
+                        "description": "The letter of the day. M for Monday, T for Tuesday, W for Wednesday,  R for Thursday, F for Friday"
+                    },
+                  }
+                }
+            },
+            // by_weekday: {
+            //   type: "string",
+            //   description:
+            //     "The letters for recurring days of the class as a string of format ['M', 'T', 'W', 'R', 'F'] where M for Monday, T for Tuesday, W for Wednesday,  R for Thursday, F for Friday",
+            // },
+            location: {
+              type: "string",
+              description: "The location",
+            },
+          },
+          required: ["name", "date", "time_slot", "by_weekday", "location"],
+        },
+      },
+    ],
+  });
 
-    console.log("response", response);
-    let reply = response.choices[0].message.content;
-    const finishReason = response.choices[0].finish_reason;
+  console.log("response", response);
+  let reply = response.choices[0].message.content;
+  const finishReason = response.choices[0].finish_reason;
 
-    if (finishReason === "function_call") {
-      // Extract eventData from the message field
-      const function_name = response.choices[0].message.function_call.name;
+  if (finishReason === "function_call") {
+    // Extract eventData from the message field
+    const function_name = response.choices[0].message.function_call.name;
 
-      if (function_name === "create_event") {
-        const eventData = JSON.parse(response.choices[0].message.function_call.arguments); // Adjust according to the actual structure
-        console.log("eventData", eventData);
-        // Perform the POST request
-        axios
-          .post("http://localhost:5000/api/users/event", eventData)
-          .then((res) => {
-            console.log("Response:", res.data);
-          })
-          .catch((err) => {
-            console.error("Error:", err);
-          });
-        reply = "Event " + eventData.name + " created for you boilermaker on " + eventData.date + " at " + eventData.time_slot;
-      }
-
-      if (function_name === "edit_event") {
-        const eventData = JSON.parse(response.choices[0].message.function_call.arguments); // Adjust according to the actual structure
-        console.log("eventData", eventData);
-        // Perform the PUT request
-        axios
-          .put("http://localhost:5000/api/users/event", eventData)
-          .then((res) => {
-            console.log("Response:", res.data);
-          })
-          .catch((err) => {
-            console.error("Error:", err);
-          });
-        reply = "Event " + eventData.name + " edited for you boilermaker";
-      }
-
-      if (function_name === "delete_event") {
-        const eventData = JSON.parse(response.choices[0].message.function_call.arguments); // Adjust according to the actual structure
-        console.log("eventData", eventData);
-        // Perform the PUT request
-        axios
-          .delete("http://localhost:5000/api/users/event", { data: eventData }) // Replace with your actual eventData)
-          .then((res) => {
-            console.log("Response:", res.data);
-          })
-          .catch((err) => {
-            console.error("Error:", err);
-          });
-        reply = "Event " + eventData.name + " deleted for you boilermaker";
-      }
+    if (function_name === "create_event") {
+      const eventData = JSON.parse(
+        response.choices[0].message.function_call.arguments
+      ); // Adjust according to the actual structure
+      console.log("eventData", eventData);
+      // Perform the POST request
+      axios
+        .post("http://localhost:5000/api/users/event", eventData)
+        .then((res) => {
+          console.log("Response:", res.data);
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+        });
+      reply =
+        "Event " +
+        eventData.name +
+        " created for you boilermaker on " +
+        eventData.date +
+        " at " +
+        eventData.time_slot;
     }
 
-    // const eventData = {
-    //   date: "2023-11-24",
-    //   time_slot: "06:00 - 07:00",
-    //   name: "Painting",
-    // };
+    if (function_name === "edit_event") {
+      const eventData = JSON.parse(
+        response.choices[0].message.function_call.arguments
+      ); // Adjust according to the actual structure
+      console.log("eventData", eventData);
+      // Perform the PUT request
+      axios
+        .put("http://localhost:5000/api/users/event", eventData)
+        .then((res) => {
+          console.log("Response:", res.data);
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+        });
+      reply = "Event " + eventData.name + " edited for you boilermaker";
+    }
 
-    // let req_resp = await axios.post(
-    //   "http://localhost:5000/api/users/event",
-    //   eventData
-    // );
-    // console.log("Response:", req_resp);
+    if (function_name === "delete_event") {
+      const eventData = JSON.parse(
+        response.choices[0].message.function_call.arguments
+      ); // Adjust according to the actual structure
+      console.log("eventData", eventData);
+      // Perform the PUT request
+      axios
+        .delete("http://localhost:5000/api/users/event", { data: eventData }) // Replace with your actual eventData)
+        .then((res) => {
+          console.log("Response:", res.data);
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+        });
+      reply = "Event " + eventData.name + " deleted for you boilermaker";
+    }
 
-    console.log("GPT REPLY:", reply);
+    if (function_name === "create_class") {
+      const eventData = JSON.parse(
+        response.choices[0].message.function_call.arguments
+      ); // Adjust according to the actual structure
 
-    await axios.post(
-      `https://api.chatengine.io/chats/${activeChatId}/messages/`,
-      { text: reply },
-      {
-        headers: {
-          "Project-ID": process.env.PROJECT_ID,
-          "User-Name": process.env.BOT_USER_NAME,
-          "User-Secret": process.env.BOT_USER_SECRET,
-        },
-      }
-    );
-
-    res.status(200).json({ text: response.choices[0].message.content });
-  } catch (error) {
-    //console.log("error", error);
-    res.status(500).json({ error: error.message });
+      console.log("eventData", eventData);
+      const daysArray = eventData.by_weekday;
+      const transformedArray = daysArray.map(day => ({ day: day }));
+      const jsonString = JSON.stringify(transformedArray);
+      console.log(jsonString);
+      eventData.by_weekday = jsonString;
+      // Perform the POST request
+      axios
+        .post("http://localhost:5000/api/users/class", eventData)
+        .then((res) => {
+          console.log("Response:", res.data);
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+        });
+      reply = "Class " + eventData.name + " created for you boilermaker";
+    }
   }
+
+  // const eventData = {
+  //   date: "2023-11-24",
+  //   time_slot: "06:00 - 07:00",
+  //   name: "Painting",
+  // };
+
+  // let req_resp = await axios.post(
+  //   "http://localhost:5000/api/users/event",
+  //   eventData
+  // );
+  // console.log("Response:", req_resp);
+
+  console.log("GPT REPLY:", reply);
+
+  // this is giving an error, pls check @yuvikakhurana
+  // await axios.post(
+  //   `https://api.chatengine.io/chats/${activeChatId}/messages/`,
+  //   { text: reply },
+  //   {
+  //     headers: {
+  //       "Project-ID": process.env.PROJECT_ID,
+  //       "User-Name": process.env.BOT_USER_NAME,
+  //       "User-Secret": process.env.BOT_USER_SECRET,
+  //     },
+  //   }
+  // );
+
+  res.status(200).json({ text: reply });
 });
 
 router.post("/code", async (req, res) => {

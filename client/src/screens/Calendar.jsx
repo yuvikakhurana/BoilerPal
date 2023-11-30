@@ -275,6 +275,8 @@ const MyCalendarComponent = () => {
       by_weekday: JSON.stringify(formattedDays, null, 2),
       location: classForm.location,
     };
+    console.log(formattedDays);
+    console.log(newClass);
     await createClass(newClass);
 
     setShowClassModal(false);

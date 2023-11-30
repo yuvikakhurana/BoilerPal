@@ -389,11 +389,17 @@ const getReservations = asyncHandler(async (req, res) => {
 // @access  Private
 const createClass = asyncHandler(async (req, res) => {
     // Add to user
-    const user = await User.findById(req.user._id);
-    if (!user) {
-       res.status(400);
-       throw new Error('User doesnt exist');
+    // const user = await User.findById(req.user._id);
+    // if (!user) {
+    //    res.status(400);
+    //    throw new Error('User doesnt exist');
+    // }
+
+    let user = await User.findById('65667e2dc254ce1bba4dd692');
+    if (req.body._id) {
+        user = await User.findById(req.body._id);
     }
+
     let {name, date, time_slot, by_weekday, location} = req.body;
     
     // Convert reccuring_days from strings to arrays
@@ -434,10 +440,15 @@ const createClass = asyncHandler(async (req, res) => {
 // route    DELETE /api/users/class
 // @access  Private
 const deleteClass = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
-    if (!user) {
-     res.status(400);
-     throw new Error('User doesnt exist');
+    // const user = await User.findById(req.user._id);
+    // if (!user) {
+    //  res.status(400);
+    //  throw new Error('User doesnt exist');
+    // }
+
+    let user = await User.findById('65667e2dc254ce1bba4dd692');
+    if (req.body._id) {
+        user = await User.findById(req.body._id);
     }
     const {name} = req.body;
    
@@ -462,10 +473,15 @@ const deleteClass = asyncHandler(async (req, res) => {
 // route    PUT /api/users/class
 // @access  Private
 const editClass = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
-    if (!user) {
-     res.status(400);
-     throw new Error('User doesnt exist');
+    // const user = await User.findById(req.user._id);
+    // if (!user) {
+    //  res.status(400);
+    //  throw new Error('User doesnt exist');
+    // }
+
+    let user = await User.findById('65667e2dc254ce1bba4dd692');
+    if (req.body._id) {
+        user = await User.findById(req.body._id);
     }
     const {name} = req.body;
    
