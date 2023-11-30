@@ -30,10 +30,10 @@ router.post("/text", async (req, res) => {
         {
           role: "system",
           content:
-            "You are a helpful assistant for Purdue students who gives a Purdue Trivia bit after every reply. Answer the questions being asked using context of Purdue University. You may also need to call functions related to classes and events for some questions. ",
+            "You are a helpful assistant for Purdue students. Answer the questions being asked using context of Purdue University. You may also need to call functions related to classes and events for some questions. ",
         },
         //the message the user sends
-        { role: "user", content: text + "End your reply with an appropriate Purdue phrase" },
+        { role: "user", content: text + "End your reply with an appropriate Purdue phrase or trivia" },
       ],
       functions: [
         {
