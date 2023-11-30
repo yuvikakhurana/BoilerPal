@@ -1,15 +1,24 @@
 import React from "react";
-import axios from "axios";
-import { ListContainer, Row, Text, DeleteIcon, EditIcon } from "./styles";
+import { ListContainer, Row, Text, DeleteIcon } from "./styles";
+import {useCreateTodoMutation,
+  useDeleteTodoMutation,
+  useEditTodoMutation,
+  useGetTodosMutation
+} from "../../slices/usersApiSlice.js";
 
-function TodoList({ todos, fetchData }) {
+function TodoList({ todos, fetchData, setTodos }) {
+  const [editTodo] = useEditTodoMutation();
+  const [delTodo] = useDeleteTodoMutation();
+
   const updateTodo = async (text, completed) => {
     try {
-      const response = await axios.put(`/todos/${text}`, {
-        text, completed
-      });
-      fetchData();
-      return response.data.json;
+      let todo_new = {
+        text: text,
+        completed: !completed,
+      };
+      console.log(todo_new);
+      const response = await editTodo({ text: text, completed: !completed });
+      console.log(todos);
     } catch (err) {
       console.error(err.message);
     }
@@ -17,10 +26,9 @@ function TodoList({ todos, fetchData }) {
 
   const deleteTodo = async (text) => {
     try {
-      const response = await axios.delete(`/todos/${text}`, {
-        text,
-      });
-      fetchData();
+      const response = await delTodo({ text: text });
+      setTodos(todos.filter((todo) => todo.text !== text));
+      console.log(todos);
       return response.data.json;
     } catch (err) {
       console.error(err.message);
@@ -31,9 +39,9 @@ function TodoList({ todos, fetchData }) {
     <div>
       <ListContainer>
         {todos?.map((todo) => (
-          <Row key={todo._id}>
+          <Row key={todo.text}>
             <Text
-              onClick={() => updateTodo(todo.text, !todo.completed)}
+              onClick={() => updateTodo(todo.text, todo.completed)}
               isCompleted={todo.completed}
             >
               {todo.text}
@@ -44,7 +52,6 @@ function TodoList({ todos, fetchData }) {
             >
               X
             </DeleteIcon>
-            <EditIcon onClick={() => handleEditClick(todo)}>Edit</EditIcon> 
           </Row>
         ))}
       </ListContainer>

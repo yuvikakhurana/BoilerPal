@@ -181,9 +181,9 @@ const MyCalendarComponent = () => {
 
   const [getItems, { data }] = useGetAllItemsMutation();
 
-  useEffect(() => {
-    getItems();
-  }, []);
+  // useEffect(() => {
+  //   getItems();
+  // }, []);
 
   useEffect(() => {
     if (data) {
