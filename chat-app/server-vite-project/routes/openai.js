@@ -16,6 +16,7 @@ router.post("/text", async (req, res) => {
     // console.log('req.body', req.body);
 
     //making the API call:
+    console.log("text", text);
 
     const response = await openai.chat.completions.create({
       //refer openai api reference
@@ -23,25 +24,155 @@ router.post("/text", async (req, res) => {
       //max-tokens- length of response
       //see more on guide
 
-      model: "gpt-3.5-turbo",
+      model: "gpt-3.5-turbo-0613",
       messages: [
         // this represents the bot and what role they will assume
         {
           role: "system",
           content:
-            "You are a helpful assistant. Your name is AI_Bot_Pete. If a user asks you to add, delete or edit and event, just respond with <action the user has specified: Adding/Deleting/Editing Event and a JSON object with the following values and format: date:YYYY-MM-DD, time-slot: HH:MM - HH:MM, name: <event description>",
+            "You are a helpful assistant for Purdue students who gives a Purdue Trivia bit after every reply. Answer the questions being asked using context of Purdue University. You may also need to call functions related to classes and events for some questions. If you have to edit/delete a class or event and the user has not given the name for it, ask for it specifically.",
         },
         //the message the user sends
-        { role: "user", content: text },
+        { role: "user", content: text + "Give me one short Purdue Trivia bit too after you answer previous query. It should be titled 'Purdue Trivia'. Ask for name of event/class I am trying to edit/delete an event or class." },
+      ],
+      functions: [
+        {
+          name: "create_event",
+          description:
+            "Creates an event/task using the name, date given, and time interval for that when the user asks to create an event. If the date is not given, it just uses the current date - Nov 30 2023.",
+          parameters: {
+            type: "object",
+            properties: {
+              name: {
+                type: "string",
+                description: "The name of the event/task to be created",
+              },
+              date: {
+                type: "string",
+                description: "The date of the event/task in the format YYYY-MM-DD",
+              },
+              time_slot: {
+                type: "string",
+                description:
+                  "The time interval of the event/task in the format HH:MM-HH:MM in 24 hour format",
+              },
+            },
+            required: ["name", "date", "time_slot"],
+          },
+        },
+        {
+          name: "edit_event",
+          description:
+            "Edits an event/task's time slot or date only if name of event is given. Only name and field to be changed needs to be passed to the function. Convert 12 hour time to 24 hour time.",
+          parameters: {
+            type: "object",
+            properties: {
+              name: {
+                type: "string",
+                description: "The name of the event/task to be edited",
+              },
+              date: {
+                type: "string",
+                description: "The new/original date of the event/task in the format YYYY-MM-DD",
+              },
+              time_slot: {
+                type: "string",
+                description:
+                  "The new/original time interval of the event/task in the format HH:MM-HH:MM in 24 hour format",
+              },
+            },
+            required: ["name"],
+          },
+        },
+        {
+          name: "delete_event",
+          description:
+            "Deletes an event using the given name",
+          parameters: {
+            type: "object",
+            properties: {
+              name: {
+                type: "string",
+                description: "The name of the event/task to be deleted",
+              },
+            },
+            required: ["name"],
+          },
+        }
       ],
     });
 
-    const result = response.choices[0].message.content;
-    //console.log(result);
+    console.log("response", response);
+    let reply = response.choices[0].message.content;
+    const finishReason = response.choices[0].finish_reason;
+
+    if (finishReason === "function_call") {
+      // Extract eventData from the message field
+      const function_name = response.choices[0].message.function_call.name;
+
+      if (function_name === "create_event") {
+        const eventData = JSON.parse(response.choices[0].message.function_call.arguments); // Adjust according to the actual structure
+        console.log("eventData", eventData);
+        // Perform the POST request
+        axios
+          .post("http://localhost:5000/api/users/event", eventData)
+          .then((res) => {
+            console.log("Response:", res.data);
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+          });
+        reply = "Event " + eventData.name + " created for you boilermaker on " + eventData.date + " at " + eventData.time_slot;
+      }
+
+      if (function_name === "edit_event") {
+        const eventData = JSON.parse(response.choices[0].message.function_call.arguments); // Adjust according to the actual structure
+        console.log("eventData", eventData);
+        // Perform the PUT request
+        axios
+          .put("http://localhost:5000/api/users/event", eventData)
+          .then((res) => {
+            console.log("Response:", res.data);
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+          });
+        reply = "Event " + eventData.name + " edited for you boilermaker";
+      }
+
+      if (function_name === "delete_event") {
+        const eventData = JSON.parse(response.choices[0].message.function_call.arguments); // Adjust according to the actual structure
+        console.log("eventData", eventData);
+        // Perform the PUT request
+        axios
+          .delete("http://localhost:5000/api/users/event", { data: eventData }) // Replace with your actual eventData)
+          .then((res) => {
+            console.log("Response:", res.data);
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+          });
+        reply = "Event " + eventData.name + " deleted for you boilermaker";
+      }
+    }
+
+    // const eventData = {
+    //   date: "2023-11-24",
+    //   time_slot: "06:00 - 07:00",
+    //   name: "Painting",
+    // };
+
+    // let req_resp = await axios.post(
+    //   "http://localhost:5000/api/users/event",
+    //   eventData
+    // );
+    // console.log("Response:", req_resp);
+
+    console.log("GPT REPLY:", reply);
 
     await axios.post(
       `https://api.chatengine.io/chats/${activeChatId}/messages/`,
-      { text: response.choices[0].message.content },
+      { text: reply },
       {
         headers: {
           "Project-ID": process.env.PROJECT_ID,
@@ -53,7 +184,7 @@ router.post("/text", async (req, res) => {
 
     res.status(200).json({ text: response.choices[0].message.content });
   } catch (error) {
-    console.log("error", error);
+    //console.log("error", error);
     res.status(500).json({ error: error.message });
   }
 });

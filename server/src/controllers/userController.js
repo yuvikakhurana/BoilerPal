@@ -506,14 +506,21 @@ const getClasses = asyncHandler(async (req, res) => {
 // route    POST /api/users/event
 // @access  Private
 const createEvent = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+    //const user = await User.findById(req.user._id);
     /*if (!user) {
        res.status(400);
        throw new Error('User doesnt exist');
     }*/
-    if (!user) {
-        user = await User.findById('65667e2dc254ce1bba4dd692');
+    // if (!user) {
+    //     user = await User.findById('65667e2dc254ce1bba4dd692');
+    // }
+    // Check if req has field _id
+
+    let user = await User.findById('65667e2dc254ce1bba4dd692');
+    if (req.body._id) {
+        user = await User.findById(req.body._id);
     }
+
     let {name, date, time_slot, } = req.body;
     
     if (name && date && time_slot) {
@@ -548,16 +555,22 @@ const createEvent = asyncHandler(async (req, res) => {
 // route    DELETE /api/users/event
 // @access  Private
 const deleteEvent = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
-    /*if (!user) {
-     res.status(400);
-     throw new Error('User doesnt exist');
-    }*/
-    if (!user) {
-        user = await User.findById('65667e2dc254ce1bba4dd692');
+    // const user = await User.findById(req.user._id);
+    // /*if (!user) {
+    //  res.status(400);
+    //  throw new Error('User doesnt exist');
+    // }*/
+    // if (!user) {
+    //     user = await User.findById('65667e2dc254ce1bba4dd692');
+    // }
+    // console.log(user.name);
+
+    let user = await User.findById('65667e2dc254ce1bba4dd692');
+    if (req.body._id) {
+        user = await User.findById(req.body._id);
     }
-    console.log(user.name);
     const {name} = req.body;
+    console.log(name);
    
     if (name) {
      let eventIndex = user.events.findIndex(evt => evt.name === name);
@@ -580,14 +593,16 @@ const deleteEvent = asyncHandler(async (req, res) => {
 // route    PUT /api/users/event
 // @access  Private
 const editEvent = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+    // const user = await User.findById(req.user._id);
     /*if (!user) {
      res.status(400);
      throw new Error('User doesnt exist');
     }*/
-    if (!user) {
-        user = await User.findById('65667e2dc254ce1bba4dd692');
+    let user = await User.findById('65667e2dc254ce1bba4dd692');
+    if (req.body._id) {
+        user = await User.findById(req.body._id);
     }
+
     const {name} = req.body;
    
     if (name) {
