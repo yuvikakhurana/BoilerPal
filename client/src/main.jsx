@@ -25,6 +25,8 @@ import PasswordReset from './screens/PasswordReset.jsx';
 import Routing from './screens/Routing.jsx';
 import Calendar from './screens/Calendar.jsx';
 import Reservation from "./screens/reserve.jsx";
+import Buildings from "./screens/Buildings.jsx"
+import Retail from "./screens/Retail.jsx"
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -35,8 +37,6 @@ const router = createBrowserRouter(
       <Route path='/verify/:id/:token' element={<VerifyAccount />} />
       <Route path='/forgotPassword' element={<ForgotPassword />} />
       <Route path='/resetPassword/:id/:token' element={<PasswordReset />} />
-      {/* Private Routes */}
-      <Route path="" element={<PrivateRoute />}>
         <Route path="/dashboard" element={<Calendar />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/menu" element={<Menu />} />
@@ -45,7 +45,8 @@ const router = createBrowserRouter(
         <Route path="/reserve" element={<Reservation />} />
         <Route path="/routing" element={<Routing />} />
         <Route path="/calendar" element={<Calendar />} />
-      </Route>
+        <Route path="/buildings" element={<Buildings />} />
+        <Route path="/retail" element={<Retail />} />
     </Route>
   )
 );
