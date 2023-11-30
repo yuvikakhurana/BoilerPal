@@ -29,12 +29,15 @@ router.post("/text", async (req, res) => {
         {
           role: "system",
           content:
-            "You are a helpful assistant. Your name is AI_Bot_Pete. Don't help the user in cheating.",
+            "You are a helpful assistant. Your name is AI_Bot_Pete. If a user asks you to add, delete or edit and event, just respond with <action the user has specified: Adding/Deleting/Editing Event and a JSON object with the following values and format: date:YYYY-MM-DD, time-slot: HH:MM - HH:MM, name: <event description>",
         },
         //the message the user sends
         { role: "user", content: text },
       ],
     });
+
+    const result = response.choices[0].message.content;
+    //console.log(result);
 
     await axios.post(
       `https://api.chatengine.io/chats/${activeChatId}/messages/`,
