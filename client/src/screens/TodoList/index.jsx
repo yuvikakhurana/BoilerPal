@@ -1,14 +1,42 @@
 import React from "react";
 import { ListContainer, Row, Text, DeleteIcon } from "./styles";
-import {useCreateTodoMutation,
+import {
+  useCreateTodoMutation,
   useDeleteTodoMutation,
   useEditTodoMutation,
-  useGetTodosMutation
+  useGetTodosMutation,
 } from "../../slices/usersApiSlice.js";
+import { useState } from "react";
 
 function TodoList({ todos, fetchData, setTodos }) {
   const [editTodo] = useEditTodoMutation();
   const [delTodo] = useDeleteTodoMutation();
+  const [editing, setEditing] = useState(null);
+  const [newText, setNewText] = useState("");
+
+  const handleEdit = (text) => {
+    if (editing === text) {
+      setEditing(null);
+      setNewText("");
+      return;
+    }
+    setEditing(text);
+    setNewText(text);
+  };
+
+  const updateTextTodo = async (oldText, newText) => {
+    try {
+      let todo_new = {
+        text: oldText,
+        new_text: newText,
+      };
+      const response = await editTodo(todo_new);
+      setTodos(todos.map((todo) => (todo.text === oldText ? { ...todo, text: newText } : todo)));
+      setEditing(null);
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
 
   const updateTodo = async (text, completed) => {
     try {
@@ -17,8 +45,8 @@ function TodoList({ todos, fetchData, setTodos }) {
         completed: !completed,
       };
       console.log(todo_new);
-      const response = await editTodo({ text: text, completed: !completed });
-      console.log(todos);
+      const response = await editTodo(todo_new);
+      setTodos(todos.map((todo) => (todo.text === text ? todo_new : todo)));
     } catch (err) {
       console.error(err.message);
     }
@@ -39,15 +67,25 @@ function TodoList({ todos, fetchData, setTodos }) {
     <div>
       <ListContainer>
         {todos?.map((todo) => (
-          <Row key={todo.text}>
-            <Text
-              onClick={() => updateTodo(todo.text, todo.completed)}
-              isCompleted={todo.completed}
-            >
-              {todo.text}
-            </Text>
+          <Row key={todo.text} >
+            {editing === todo.text ? (
+              <input
+                type="text"
+                value={newText}
+                onChange={(e) => setNewText(e.target.value)}
+                onBlur={() => updateTextTodo(todo.text, newText, todo.completed)}
+              />
+            ) : (
+              <Text
+                onClick={() => updateTodo(todo.text, todo.completed)}
+                isCompleted={todo.completed}
+              >
+                {todo.text}
+              </Text>
+            )}
+            <img src="edit.png" onClick={() => handleEdit(todo.text)} width="15px"/>
             <DeleteIcon
-              data-testid="close"
+              data-testid="delete"
               onClick={() => deleteTodo(todo.text)}
             >
               X

@@ -29,20 +29,20 @@ router.post("/text", async (req, res) => {
       {
         role: "system",
         content:
-          "You are a helpful assistant for Purdue students. Answer the questions being asked using context of Purdue University. You may also need to call functions related to classes and events for some questions. ",
+          "You are a helpful assistant for Purdue students. Answer the questions being asked using context of Purdue University. You may also need to call functions related to classes and events for some questions.  ",
       },
       //the message the user sends
       {
         role: "user",
         content:
-          text + "End your reply with an appropriate Purdue phrase or trivia",
+          text + "End your reply with an appropriate Purdue phrase or trivia.",
       },
     ],
     functions: [
       {
         name: "create_event",
         description:
-          "Creates an event/task using the name, date given, and time interval for that when the user asks to create an event. If the date is not given, it just uses the current date - Nov 30 2023.",
+          "Creates an event/task using the name, date given, and time interval for that when the user asks to create an event. If required fields are not give, prompt user for it. If the date is not given, it just uses the current date - Dec 01 2023.",
         parameters: {
           type: "object",
           properties: {
@@ -67,7 +67,7 @@ router.post("/text", async (req, res) => {
       {
         name: "edit_event",
         description:
-          "Edits an event/task's time slot or date only if name of event is given. Only name and field to be changed needs to be passed to the function. Convert 12 hour time to 24 hour time.",
+          "Edits an event/task's time slot or date only if name of event is given. Only name and field to be changed needs to be passed to the function. Convert 12 hour time to 24 hour time. If the date is not given, it just uses the current date - Dec 01 2023.",
         parameters: {
           type: "object",
           properties: {
@@ -106,7 +106,7 @@ router.post("/text", async (req, res) => {
       {
         name: "create_class",
         description:
-          "Creates a class using class name, date, time interval, recurring days and location",
+          "Creates a class using class name, date, time interval, recurring days and location. If location is not given, prompt user for it. If the date is not given, it just uses the current date - Dec 01 2023.",
         parameters: {
           type: "object",
           properties: {
@@ -132,7 +132,7 @@ router.post("/text", async (req, res) => {
                 "properties": {
                     "day": {
                         "type": "string",
-                        "description": "The letter of the day. M for Monday, T for Tuesday, W for Wednesday,  R for Thursday, F for Friday"
+                        "description": "The letter of the day. M for Monday, T for Tuesday, W for Wednesday,  R for Thursday, F for Friday. "
                     },
                   }
                 }
@@ -148,6 +148,21 @@ router.post("/text", async (req, res) => {
             },
           },
           required: ["name", "date", "time_slot", "by_weekday", "location"],
+        },
+      },
+      {
+        name: "delete_class",
+        description:
+          "Deletes a class of the given name",
+        parameters: {
+          type: "object",
+          properties: {
+            name: {
+              type: "string",
+              description: "The name of the class",
+            },
+          },
+          required: ["name"],
         },
       },
     ],
@@ -239,6 +254,24 @@ router.post("/text", async (req, res) => {
           console.error("Error:", err);
         });
       reply = "Class " + eventData.name + " created for you boilermaker";
+    }
+
+    if (function_name === "delete_class") {
+      const eventData = JSON.parse(
+        response.choices[0].message.function_call.arguments
+      ); // Adjust according to the actual structure
+
+      console.log("eventData", eventData);
+      // Perform the POST request
+      axios
+        .delete("http://localhost:5000/api/users/class", {data: eventData})
+        .then((res) => {
+          console.log("Response:", res.data);
+        })
+        .catch((err) => {
+          console.error("Error:", err);
+        });
+      reply = "Class " + eventData.name + " deleted for you boilermaker";
     }
   }
 

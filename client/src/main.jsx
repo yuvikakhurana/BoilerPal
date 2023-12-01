@@ -26,6 +26,7 @@ import Routing from './screens/Routing.jsx';
 import Calendar from './screens/Calendar.jsx';
 import Reservation from "./screens/reserve.jsx";
 import GpaCalc from "./screens/gpaCalc.jsx";
+import VendingInfo from "./screens/foodVending.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,11 +43,12 @@ const router = createBrowserRouter(
         <Route path="/gpa-calc" element={<GpaCalc />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/menu" element={<Menu />} />
-        <Route path="/floormap" element={<FloorMap />} />
+        <Route path="/building-info" element={<FloorMap />} />
         <Route path="/vending" element={<VendingMachine />} />
         <Route path="/reserve" element={<Reservation />} />
         <Route path="/routing" element={<Routing />} />
         <Route path="/calendar" element={<Calendar />} />
+        <Route path="/foodVending" element={<VendingInfo />} />
       </Route>
     </Route>
   )
