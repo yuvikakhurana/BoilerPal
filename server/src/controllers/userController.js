@@ -6,8 +6,9 @@ import Token from '../models/verificationToken.js'
 import sendEmail from '../utils/sendEmail.js'
 import verificationToken from '../models/verificationToken.js';
 import Room from "../models/roomModel.js";
-import schedule from 'node-schedule';
 
+
+const userCodeHard = '65698164a576ad63686c3d62'
 // @desc    Auth user & get token
 // @route   POST /api/users/auth
 // @access  Public
@@ -390,16 +391,16 @@ const getReservations = asyncHandler(async (req, res) => {
 // @access  Private
 const createClass = asyncHandler(async (req, res) => {
     // Add to user
-    // const user = await User.findById(req.user._id);
-    // if (!user) {
-    //    res.status(400);
-    //    throw new Error('User doesnt exist');
-    // }
+    const user = await User.findById(req.user._id);
+    if (!user) {
+       res.status(400);
+       throw new Error('User doesnt exist');
+    }
 
-    let user = await User.findById('65667e2dc254ce1bba4dd692');
+    /*let user = await User.findById('65667e2dc254ce1bba4dd692');
     if (req.body._id) {
         user = await User.findById(req.body._id);
-    }
+    }*/
 
     let {name, date, time_slot, by_weekday, location} = req.body;
     
@@ -441,16 +442,16 @@ const createClass = asyncHandler(async (req, res) => {
 // route    DELETE /api/users/class
 // @access  Private
 const deleteClass = asyncHandler(async (req, res) => {
-    // const user = await User.findById(req.user._id);
-    // if (!user) {
-    //  res.status(400);
-    //  throw new Error('User doesnt exist');
-    // }
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
 
-    let user = await User.findById('65667e2dc254ce1bba4dd692');
+    /*let user = await User.findById('65667e2dc254ce1bba4dd692');
     if (req.body._id) {
         user = await User.findById(req.body._id);
-    }
+    }*/
     const {name} = req.body;
    
     if (name) {
@@ -474,16 +475,16 @@ const deleteClass = asyncHandler(async (req, res) => {
 // route    PUT /api/users/class
 // @access  Private
 const editClass = asyncHandler(async (req, res) => {
-    // const user = await User.findById(req.user._id);
-    // if (!user) {
-    //  res.status(400);
-    //  throw new Error('User doesnt exist');
-    // }
-
-    let user = await User.findById('65667e2dc254ce1bba4dd692');
-    if (req.body._id) {
-        user = await User.findById(req.body._id);
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
     }
+
+    // let user = await User.findById('65667e2dc254ce1bba4dd692');
+    // if (req.body._id) {
+    //     user = await User.findById(req.body._id);
+    // }
     const {name} = req.body;
    
     if (name) {
@@ -523,20 +524,16 @@ const getClasses = asyncHandler(async (req, res) => {
 // route    POST /api/users/event
 // @access  Private
 const createEvent = asyncHandler(async (req, res) => {
-    //const user = await User.findById(req.user._id);
-    /*if (!user) {
+    const user = await User.findById(req.user._id);
+    if (!user) {
        res.status(400);
        throw new Error('User doesnt exist');
-    }*/
-    // if (!user) {
-    //     user = await User.findById('65667e2dc254ce1bba4dd692');
-    // }
-    // Check if req has field _id
-
-    let user = await User.findById('65667e2dc254ce1bba4dd692');
-    if (req.body._id) {
-        user = await User.findById(req.body._id);
     }
+
+    // let user = await User.findById('65667e2dc254ce1bba4dd692');
+    // if (req.body._id) {
+    //     user = await User.findById(req.body._id);
+    // }
 
     let {name, date, time_slot, } = req.body;
     
@@ -572,22 +569,18 @@ const createEvent = asyncHandler(async (req, res) => {
 // route    DELETE /api/users/event
 // @access  Private
 const deleteEvent = asyncHandler(async (req, res) => {
-    // const user = await User.findById(req.user._id);
-    // /*if (!user) {
-    //  res.status(400);
-    //  throw new Error('User doesnt exist');
-    // }*/
-    // if (!user) {
-    //     user = await User.findById('65667e2dc254ce1bba4dd692');
-    // }
-    // console.log(user.name);
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
 
-    let user = await User.findById('65667e2dc254ce1bba4dd692');
+    /*let user = await User.findById('65667e2dc254ce1bba4dd692');
     if (req.body._id) {
         user = await User.findById(req.body._id);
-    }
+    }*/
     const {name} = req.body;
-    console.log(name);
+    //console.log(name);
    
     if (name) {
      let eventIndex = user.events.findIndex(evt => evt.name === name);
@@ -610,15 +603,15 @@ const deleteEvent = asyncHandler(async (req, res) => {
 // route    PUT /api/users/event
 // @access  Private
 const editEvent = asyncHandler(async (req, res) => {
-    // const user = await User.findById(req.user._id);
-    /*if (!user) {
+    const user = await User.findById(req.user._id);
+    if (!user) {
      res.status(400);
      throw new Error('User doesnt exist');
-    }*/
-    let user = await User.findById('65667e2dc254ce1bba4dd692');
+    }
+    /*let user = await User.findById('65667e2dc254ce1bba4dd692');
     if (req.body._id) {
         user = await User.findById(req.body._id);
-    }
+    }*/
 
     const {name} = req.body;
    
@@ -646,12 +639,9 @@ const editEvent = asyncHandler(async (req, res) => {
 // @access  Private
 const getEvents = asyncHandler(async (req, res) => {
     const user = await User.findById(req.user._id);
-    /*if (!user) {
+    if (!user) {
      res.status(400);
      throw new Error('User doesnt exist');
-    }*/
-    if (!user) {
-        user = await User.findById('65667e2dc254ce1bba4dd692');
     }
     res.status(200).json(user.events);
 });
@@ -781,7 +771,6 @@ const getTodos = asyncHandler(async (req, res) => {
     res.status(200).json(user.todos);
 });
    
-
 // @desc    Turn on/off email reminders
 // route    POST /api/users/reminder
 // @access  Private
@@ -820,7 +809,7 @@ const toggleReminder = asyncHandler(async (req, res) => {
          info: obj
          };
         });
-        console.log(dates)
+        //console.log(dates)
         
         dates.forEach(({date, info}) => {
          const job = schedule.scheduleJob(date, async function(){
@@ -847,6 +836,194 @@ const getReminder = asyncHandler(async (req, res) => {
     }
     res.status(200).json(user.reminder);
 });
+
+// @desc    Create a new class for chat
+// route    POST /api/users/class
+// @access  Unprotected
+const chatCreateClass = asyncHandler(async (req, res) => {
+    let user = await User.findById(userCodeHard);
+
+    let {name, date, time_slot, by_weekday, location} = req.body;
+    
+    // Convert reccuring_days from strings to arrays
+    by_weekday = JSON.parse(by_weekday);
+
+    if (name && date && time_slot && by_weekday && location) {
+       // Check if Class already exists
+       let isClassExists = user.classes.some(class_v => 
+            class_v.name === name && 
+            class_v.date === date && 
+            class_v.time_slot === time_slot && 
+            class_v.location === location
+       );
+       
+       if (isClassExists) {
+           res.status(400);
+           throw new Error('Class already exists');
+       }
+   
+       let newClass = {
+            name: name,
+            date: date,
+            time_slot: time_slot,
+            by_weekday: by_weekday,
+            location: location
+       };
+       user.classes.push(newClass);
+       await user.save();
+
+       res.send('Class added successfully');
+    } else {
+       res.status(404);
+       throw new Error('Class not found');
+    }
+});
+
+// @desc    Delete a class for chat
+// route    DELETE /api/users/class
+// @access  Unprotected
+const chatDeleteClass = asyncHandler(async (req, res) => {
+    let user = await User.findById(userCodeHard);
+
+    const {name} = req.body;
+   
+    if (name) {
+     let classIndex = user.classes.findIndex(cls => cls.name === name);
+   
+     if (classIndex !== -1) {
+      user.classes.splice(classIndex, 1);
+      await user.save();
+      res.send('Class deleted successfully');
+     } else {
+      res.status(404);
+      throw new Error('Class not found');
+     }
+    } else {
+     res.status(404);
+     throw new Error('User not found');
+    }
+});
+
+// @desc    Edit a class for chat
+// route    PUT /api/users/class
+// @access  Unprotected
+const chatEditClass = asyncHandler(async (req, res) => {
+
+    let user = await User.findById(userCodeHard);
+
+    const {name} = req.body;
+   
+    if (name) {
+     let classIndex = user.classes.findIndex(cls => cls.name === name);
+   
+     if (classIndex !== -1) {
+      user.classes[classIndex].name = req.body.new_name || user.classes[classIndex].name;
+      user.classes[classIndex].date = req.body.date || user.classes[classIndex].date;
+      user.classes[classIndex].time_slot = req.body.time_slot || user.classes[classIndex].time_slot;
+      user.classes[classIndex].by_weekday = req.body.by_weekday || user.classes[classIndex].by_weekday;
+      user.classes[classIndex].location = req.body.location || user.classes[classIndex].location;
+      await user.save();
+      res.send('Class updated successfully');
+     } else {
+      res.status(404);
+      throw new Error('Class not found');
+     }
+    } else {
+     res.status(404);
+     throw new Error('User not found');
+    }
+});
+
+// @desc    Create a new event for chat
+// route    POST /api/users/event
+// @access  Unprotected
+const chatCreateEvent = asyncHandler(async (req, res) => {
+
+    let user = await User.findById(userCodeHard);
+
+
+    let {name, date, time_slot, } = req.body;
+    
+    if (name && date && time_slot) {
+       // Check if Class already exists
+       let isEventsExists = user.events.some(event => 
+            event.name === name && 
+            event.date === date && 
+            event.time_slot === time_slot
+       );
+       
+       if (isEventsExists) {
+           res.status(400);
+           throw new Error('Event already exists');
+       }
+   
+       let newEvent = {
+            name: name,
+            date: date,
+            time_slot: time_slot
+       };
+       user.events.push(newEvent);
+       await user.save();
+
+       res.send('Event added successfully');
+    } else {
+       res.status(404);
+       throw new Error('Event not found');
+    }
+});
+
+// @desc    Delete a event for chat
+// route    DELETE /api/users/event
+// @access  Unprotected
+const chatDeleteEvent = asyncHandler(async (req, res) => {
+    let user = await User.findById(userCodeHard);
+
+    const {name} = req.body;
+    
+    if (name) {
+     let eventIndex = user.events.findIndex(evt => evt.name === name);
+   
+     if (eventIndex !== -1) {
+      user.events.splice(eventIndex, 1);
+      await user.save();
+      res.send('Event deleted successfully');
+     } else {
+      res.status(404);
+      throw new Error('Event not found');
+     }
+    } else {
+     res.status(404);
+     throw new Error('User not found');
+    }
+});
+
+// @desc    Edit a event for chat
+// route    PUT /api/users/event
+// @access  Unprotected
+const chatEditEvent = asyncHandler(async (req, res) => {
+    let user = await User.findById(userCodeHard);
+
+    const {name} = req.body;
+   
+    if (name) {
+     let eventIndex = user.events.findIndex(evt => evt.name === name);
+   
+     if (eventIndex !== -1) {
+      user.events[eventIndex].name = req.body.new_name || user.events[eventIndex].name;
+      user.events[eventIndex].date = req.body.date || user.events[eventIndex].date;
+      user.events[eventIndex].time_slot = req.body.time_slot || user.events[eventIndex].time_slot;
+      await user.save();
+      res.send('Event updated successfully');
+     } else {
+      res.status(404);
+      throw new Error('Event not found');
+     }
+    } else {
+     res.status(404);
+     throw new Error('Event not found');
+    }
+});
+
 export {
     authUser,
     registerUser,
@@ -874,5 +1051,11 @@ export {
     editTodo,
     getTodos,
     toggleReminder,
-    getReminder
+    getReminder,
+    chatCreateClass,
+    chatEditClass,
+    chatDeleteClass,
+    chatCreateEvent,
+    chatDeleteEvent,
+    chatEditEvent
 };
