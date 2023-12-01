@@ -151,6 +151,19 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 method: "GET"
             })
         }),
+        toggleReminder: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/reminder`,
+                method: "POST",
+                body: data
+            })
+        }),
+        getReminderStatus: builder.mutation({
+            query: () => ({
+                url: `${USERS_URL}/reminder`,
+                method: "GET"
+            })
+        })
     })
 })
 
@@ -174,5 +187,6 @@ export const {
     useCreateTodoMutation,
     useDeleteTodoMutation,
     useEditTodoMutation,
-    useGetTodosMutation
+    useGetTodosMutation,
+    useToggleReminderMutation
 } = usersApiSlice;

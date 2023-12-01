@@ -43,7 +43,10 @@ const userSchema = mongoose.Schema({
     todos : [{
         text: String,
         completed: Boolean,
-    }]
+    }],
+    reminder : {
+        type: Boolean
+    }
 }, {
     timestamps: true
 });
