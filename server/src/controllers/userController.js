@@ -6,6 +6,7 @@ import Token from '../models/verificationToken.js'
 import sendEmail from '../utils/sendEmail.js'
 import verificationToken from '../models/verificationToken.js';
 import Room from "../models/roomModel.js";
+import schedule from "node-schedule";
 
 
 const userCodeHard = '65698164a576ad63686c3d62'
@@ -789,6 +790,7 @@ const toggleReminder = asyncHandler(async (req, res) => {
     user.save();
 
     if (toggle_bool) {
+        console.log("FEAFD");
         const classes = user.classes;
         const reservations = user.reservations;
         const events = user.events;
@@ -796,6 +798,7 @@ const toggleReminder = asyncHandler(async (req, res) => {
         const dates = [...classes, ...reservations, ...events].map(obj => {
          const timeSlot = obj.time_slot.split('-')[0].trim();
          const date = new Date(obj.date);
+         //date.setDate(dateTime.getDate() + 1);
          
          const time = new Date('1970-01-01T' + timeSlot + 'Z');
          // Ten minutes before event
@@ -806,18 +809,22 @@ const toggleReminder = asyncHandler(async (req, res) => {
          // Add 5 hours to the date
          dateTime.setHours(dateTime.getHours() + 5);
          
+        // Add one day to the date
+        dateTime.setDate(dateTime.getDate() + 1);
+         
          return {
          date: dateTime,
          info: obj
          };
         });
-        //console.log(dates)
         
         dates.forEach(({date, info}) => {
+            console.log(date);
          const job = schedule.scheduleJob(date, async function(){
          const INFO = `Name: ${info.name ? info.name : "Reservation"}\nDate: ${date}\nTime Slot: ${info.time_slot}\nLocation: ${info.location ? info.location : info.building ? info.building + ', Room ' + info.room_num : ''}`;
          await sendEmail(user.email, "Calendar Reminder", INFO);
          });
+         console.log(job);
         });
         res.status(200).json('Reminders On!');
     }
