@@ -183,7 +183,7 @@ router.post("/text", async (req, res) => {
       console.log("eventData", eventData);
       // Perform the POST request
       axios
-        .post("http://localhost:5000/api/users/event", eventData)
+        .post("http://localhost:5000/api/users/chatEvent", eventData)
         .then((res) => {
           console.log("Response:", res.data);
         })
@@ -206,7 +206,7 @@ router.post("/text", async (req, res) => {
       console.log("eventData", eventData);
       // Perform the PUT request
       axios
-        .put("http://localhost:5000/api/users/event", eventData)
+        .put("http://localhost:5000/api/users/chatEvent", eventData)
         .then((res) => {
           console.log("Response:", res.data);
         })
@@ -223,7 +223,7 @@ router.post("/text", async (req, res) => {
       console.log("eventData", eventData);
       // Perform the PUT request
       axios
-        .delete("http://localhost:5000/api/users/event", { data: eventData }) // Replace with your actual eventData)
+        .delete("http://localhost:5000/api/users/chatEvent", { data: eventData }) // Replace with your actual eventData)
         .then((res) => {
           console.log("Response:", res.data);
         })
@@ -246,7 +246,7 @@ router.post("/text", async (req, res) => {
       eventData.by_weekday = jsonString;
       // Perform the POST request
       axios
-        .post("http://localhost:5000/api/users/class", eventData)
+        .post("http://localhost:5000/api/users/chatClass", eventData)
         .then((res) => {
           console.log("Response:", res.data);
         })
@@ -264,7 +264,7 @@ router.post("/text", async (req, res) => {
       console.log("eventData", eventData);
       // Perform the POST request
       axios
-        .delete("http://localhost:5000/api/users/class", {data: eventData})
+        .delete("http://localhost:5000/api/users/chatClass", {data: eventData})
         .then((res) => {
           console.log("Response:", res.data);
         })

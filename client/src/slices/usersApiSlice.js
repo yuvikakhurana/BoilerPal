@@ -188,5 +188,6 @@ export const {
     useDeleteTodoMutation,
     useEditTodoMutation,
     useGetTodosMutation,
-    useToggleReminderMutation
+    useToggleReminderMutation,
+    useGetReminderStatusMutation
 } = usersApiSlice;

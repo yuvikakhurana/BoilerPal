@@ -20,6 +20,8 @@ const VendingInfo = () => {
   const handleSelect = (eventKey) => {
     const building = buildings.find((b) => b.name === eventKey);
     setSelectedBuilding(building);
+    setShowIce(false);
+    setShowVending(false);
   };
 
   const purdueBlack = "#333333"; // Purdue Black

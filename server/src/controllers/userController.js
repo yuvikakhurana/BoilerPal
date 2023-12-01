@@ -781,8 +781,10 @@ const toggleReminder = asyncHandler(async (req, res) => {
         throw new Error('User does not exist!');
     }
     
+    console.log(req.body)
     const { toggle } = req.body;
-    const toggle_bool = toggle === 'true';
+    const toggle_bool = (toggle === true);
+    console.log(toggle_bool);
     user.reminder = toggle_bool;
     user.save();
 

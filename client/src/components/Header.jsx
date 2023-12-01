@@ -75,9 +75,14 @@ const Header = () => {
                     </LinkContainer>
                   </NavDropdown>
 
-                  <LinkContainer to="/routing">
-                    <Nav.Link>Routing</Nav.Link>
-                  </LinkContainer>
+                  <NavDropdown title="Routing" id="nav-dropdown">
+                    <LinkContainer to="/routing">
+                      <NavDropdown.Item>Navigation</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/routeplan">
+                      <NavDropdown.Item>Route for Today</NavDropdown.Item>
+                    </LinkContainer>
+                  </NavDropdown>
 
                   <LinkContainer to="/calendar">
                     <Nav.Link>Calendar</Nav.Link>

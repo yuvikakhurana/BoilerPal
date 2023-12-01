@@ -16,6 +16,8 @@ import {
   useDeleteEventMutation,
   useEditClassMutation,
   useEditEventMutation,
+  useToggleReminderMutation,
+  useGetReminderStatusMutation,
 } from "../slices/usersApiSlice.js";
 import { useNavigate } from "react-router-dom";
 import Todo from "./Todo/index.jsx";
@@ -139,6 +141,29 @@ const MyCalendarComponent = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [isTodoVisible, setIsTodoVisible] = useState(false);
+  const [settings, setSettings] = useState({
+    toggle: false,
+  });
+
+  const [getReminderStatus, { data: reminderStatusData, isSuccess }] = useGetReminderStatusMutation();
+
+  useEffect(() => {
+    // Trigger the mutation on component mount
+    getReminderStatus();
+  }, [getReminderStatus]);
+
+  useEffect(() => {
+    // Once the data is successfully fetched, update the settings
+    console.log('Reminder Status Data: ', reminderStatusData);
+    if (isSuccess && reminderStatusData) {
+      setSettings({ toggle: reminderStatusData });
+    }
+  }, [isSuccess, reminderStatusData]);
+
+  const getToggle = () => {
+    return settings.toggle;
+  }
+
 
   const toggleTodoVisibility = () => {
     setIsTodoVisible((prevState) => !prevState);
@@ -202,6 +227,7 @@ const MyCalendarComponent = () => {
   const [deleteTask] = useDeleteEventMutation();
   const [editClass] = useEditClassMutation();
   const [editTask] = useEditEventMutation();
+  const [useToggle] = useToggleReminderMutation();
 
   // Handle form changes
   const handleClassFormChange = (e) => {
@@ -312,6 +338,9 @@ const MyCalendarComponent = () => {
     window.open("/reserve", "_blank");
   };
 
+  const handleRouteClick = () => {
+    window.open("/routeplan", "_blank");
+  }
   const handleEditClassFormChange = (e) => {
     const { name, value } = e.target;
     setEditClassForm({
@@ -365,6 +394,7 @@ const MyCalendarComponent = () => {
     setShowDetailsModal(false);
     // You may need to refresh the events list here
   };
+
   const extractClassDetails = (event) => {
     const courseName = event.title.split(" - ")[1];
     const date = moment(event.start).format("YYYY-MM-DD");
@@ -387,6 +417,20 @@ const MyCalendarComponent = () => {
     setShowDetailsModal(false);
     // Refresh the events list
   };
+
+  // // const toggleEmailNotifications = async () => {
+  // //   console.log(settings.toggle);
+  // //   await useToggleReminderMutation({ toggle: !settings.toggle });
+  // // };
+  const handleEmailToggle = async () => {
+    console.log("handleEmailToggle", !settings.toggle);
+    const newSettings = {
+      toggle: !(settings.toggle),
+    }
+    await useToggle(newSettings);
+    setSettings(newSettings);
+  }
+
   const extractTaskDetails = (event) => {
     const name = event.title;
     const date = moment(event.start).format("YYYY-MM-DD");
@@ -395,19 +439,15 @@ const MyCalendarComponent = () => {
     return { name, date, startTime, endTime };
   };
 
-  const [settings, setSettings] = useState({
-    toggle: false,
-  });
-
-  const toggleEmailNotifications = async () => {
-    const newSettings = {
-      ...settings,
-      toggle: !settings.emailNotifications,
-    };
-    console.log(newSettings);
-    //await updateSettings(newSettings);
-    setSettings(newSettings);
-  }
+  // const toggleEmailNotifications = async () => {
+  //   console.log("toggleEmailNotifications", !settings.toggle);
+  //   const newSettings = {
+  //     toggle: !(settings.toggle),
+  //   };
+  //   console.log(newSettings);
+  //   await useToggleReminderMutation(newSettings);
+  //   setSettings(newSettings);
+  // }
 
   return (
     <div className="container">
@@ -543,6 +583,9 @@ const MyCalendarComponent = () => {
         <Button variant="success" onClick={handleReserveClick}>
           Reserve a Room
         </Button>
+        <Button variant="success" onClick={handleRouteClick}>
+          Route for Today!
+        </Button>
         <Button variant="info" style = {{color: "white"}} onClick={toggleTodoVisibility}>
         {isTodoVisible ? "Hide Todos" : "Todos"}
         </Button>
@@ -551,8 +594,8 @@ const MyCalendarComponent = () => {
             type="switch"
             id="email-switch"
             label="Email Notifications"
-            onClick={toggleEmailNotifications}
-            defaultChecked={settings.toggle}
+            onClick={handleEmailToggle}
+            defaultChecked={getToggle}
           />
         </Form>
       </div>
