@@ -28,7 +28,7 @@ import Reservation from "./screens/reserve.jsx";
 import GpaCalc from "./screens/gpaCalc.jsx";
 import VendingInfo from "./screens/foodVending.jsx";
 import Retail from "./screens/Retail.jsx";
-
+import BusSchedules from "./screens/BusSchedules.jsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
@@ -50,6 +50,7 @@ const router = createBrowserRouter(
         <Route path="/routing" element={<Routing />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/foodVending" element={<VendingInfo />} />
+        <Route path="/bustimes" element={<BusSchedules />} />
       </Route>
       <Route path="/retail" element={<Retail />} />
     </Route>
@@ -63,3 +64,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     </React.StrictMode>
   </Provider>
 );
+
