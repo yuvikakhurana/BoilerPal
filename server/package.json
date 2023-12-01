@@ -2,10 +2,10 @@
   "name": "boilerpal",
   "version": "1.0.0",
   "description": "",
-  "main": "./src/server.js",
+  "main": "./api/index.js",
   "type": "module",
   "scripts": {
-    "server": "nodemon src/server.js",
+    "server": "nodemon api/index.js",
     "client": "npm run dev --prefix ../client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
