@@ -8,6 +8,7 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import cors from "cors";
 import Reviews from "./models/reviews.js";
 import roomRoutes from './routes/roomRoutes.js';
+import retailRoutes from "./routes/retailRoutes.js";
 
 /*
 -> Creates Express application
@@ -30,6 +31,7 @@ app.use(cors());
 app.use('/api/users', userRoutes);
 app.use('/api/rooms', roomRoutes);
 app.use("/reviews", reviewRoutes);
+app.use("/retail", retailRoutes);
 
 /*
 More Middleware:

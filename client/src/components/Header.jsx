@@ -87,6 +87,9 @@ const Header = () => {
                     <Nav.Link>GPA Calculator</Nav.Link>
                   </LinkContainer>
 
+                  <LinkContainer to="/retail">
+                    <Nav.Link>Retail Dining</Nav.Link>
+                  </LinkContainer>
                   <Button
                     onClick={() => {
                       window.location.assign("http://localhost:5173/chat");
