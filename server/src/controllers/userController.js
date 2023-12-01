@@ -752,7 +752,10 @@ const editTodo = asyncHandler(async (req, res) => {
    
      if (todoIndex !== -1) {
       user.todos[todoIndex].text = req.body.new_text || user.todos[todoIndex].text;
-      user.todos[todoIndex].completed = req.body.completed || user.todos[todoIndex].completed;
+      if (req.body.completed !== undefined) {
+       user.todos[todoIndex].completed = req.body.completed;
+      }
+      //user.todos[todoIndex].completed = req.body.completed || user.todos[todoIndex].completed;
       await user.save();
       res.send('Todo updated successfully');
      } else {

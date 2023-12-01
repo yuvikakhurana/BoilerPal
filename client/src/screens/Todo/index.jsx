@@ -26,7 +26,7 @@ function Todo() {
 
   useEffect(() => {
       fetchData();
-    }, [todos]);
+    }, []);
 
   const addTodo = async (e) => {
     e.preventDefault();
