@@ -480,8 +480,8 @@ const editClass = asyncHandler(async (req, res) => {
     // }
 
     let user = await User.findById('65667e2dc254ce1bba4dd692');
-    if (req.body._id) {
-        user = await User.findById(req.body._id);
+    if (req.user._id) {
+        user = await User.findById(req.user._id);
     }
     const {name} = req.body;
    
@@ -532,9 +532,9 @@ const createEvent = asyncHandler(async (req, res) => {
     // }
     // Check if req has field _id
 
-    let user = await User.findById('65667e2dc254ce1bba4dd692');
-    if (req.body._id) {
-        user = await User.findById(req.body._id);
+    //let user = await User.findById('65667e2dc254ce1bba4dd692');
+    if (req.user._id) {
+        user = await User.findById(req.user._id);
     }
 
     let {name, date, time_slot, } = req.body;

@@ -395,6 +395,20 @@ const MyCalendarComponent = () => {
     return { name, date, startTime, endTime };
   };
 
+  const [settings, setSettings] = useState({
+    toggle: false,
+  });
+
+  const toggleEmailNotifications = async () => {
+    const newSettings = {
+      ...settings,
+      toggle: !settings.emailNotifications,
+    };
+    console.log(newSettings);
+    //await updateSettings(newSettings);
+    setSettings(newSettings);
+  }
+
   return (
     <div className="container">
       <Modal show={showClassModal} onHide={handleClassModal}>
@@ -537,6 +551,8 @@ const MyCalendarComponent = () => {
             type="switch"
             id="email-switch"
             label="Email Notifications"
+            onClick={toggleEmailNotifications}
+            defaultChecked={settings.toggle}
           />
         </Form>
       </div>
