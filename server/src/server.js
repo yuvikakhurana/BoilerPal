@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors({
-  origin: ["https://boiler-pal-new.vercel.app/"];
+  origin: ["https://boiler-pal-new.vercel.app/"]
 }));
 
 // Set up API route(s)
