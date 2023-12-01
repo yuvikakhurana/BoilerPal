@@ -257,17 +257,17 @@ router.post("/text", async (req, res) => {
   console.log("GPT REPLY:", reply);
 
   // this is giving an error, pls check @yuvikakhurana
-  // await axios.post(
-  //   `https://api.chatengine.io/chats/${activeChatId}/messages/`,
-  //   { text: reply },
-  //   {
-  //     headers: {
-  //       "Project-ID": process.env.PROJECT_ID,
-  //       "User-Name": process.env.BOT_USER_NAME,
-  //       "User-Secret": process.env.BOT_USER_SECRET,
-  //     },
-  //   }
-  // );
+  await axios.post(
+    `https://api.chatengine.io/chats/${activeChatId}/messages/`,
+    { text: reply },
+    {
+      headers: {
+        "Project-ID": process.env.PROJECT_ID,
+        "User-Name": process.env.BOT_USER_NAME,
+        "User-Secret": process.env.BOT_USER_SECRET,
+      },
+    }
+  );
 
   res.status(200).json({ text: reply });
 });
