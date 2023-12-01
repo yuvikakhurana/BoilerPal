@@ -6,6 +6,7 @@ import Token from '../models/verificationToken.js'
 import sendEmail from '../utils/sendEmail.js'
 import verificationToken from '../models/verificationToken.js';
 import Room from "../models/roomModel.js";
+import schedule from 'node-schedule';
 
 // @desc    Auth user & get token
 // @route   POST /api/users/auth
@@ -778,6 +779,71 @@ const getTodos = asyncHandler(async (req, res) => {
 });
    
 
+// @desc    Turn on/off email reminders
+// route    POST /api/users/reminder
+// @access  Private
+const toggleReminder = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+        res.status(400);
+        throw new Error('User does not exist!');
+    }
+    
+    const { toggle } = req.body;
+    const toggle_bool = toggle === 'true';
+    user.reminder = toggle_bool;
+    user.save();
+
+    if (toggle_bool) {
+        const classes = user.classes;
+        const reservations = user.reservations;
+        const events = user.events;
+        
+        const dates = [...classes, ...reservations, ...events].map(obj => {
+         const timeSlot = obj.time_slot.split('-')[0].trim();
+         const date = new Date(obj.date);
+         
+         const time = new Date('1970-01-01T' + timeSlot + 'Z');
+         // Ten minutes before event
+         time.setMinutes(time.getMinutes() - 10);
+         
+         const dateTime = new Date(date.getFullYear(), date.getMonth(), date.getDate(), time.getHours(), time.getMinutes());
+        
+         // Add 5 hours to the date
+         dateTime.setHours(dateTime.getHours() + 5);
+         
+         return {
+         date: dateTime,
+         info: obj
+         };
+        });
+        console.log(dates)
+        
+        dates.forEach(({date, info}) => {
+         const job = schedule.scheduleJob(date, async function(){
+         const INFO = `Name: ${info.name ? info.name : "Reservation"}\nDate: ${date}\nTime Slot: ${info.time_slot}\nLocation: ${info.location ? info.location : info.building ? info.building + ', Room ' + info.room_num : ''}`;
+         await sendEmail(user.email, "Calendar Reminder", INFO);
+         });
+        });
+        res.status(200).json('Reminders On!');
+    }
+    else {
+        schedule.gracefulShutdown();
+        res.status(200).json('Reminders Off');
+    }
+});
+
+// @desc    get reminder boolean
+// route    GET /api/users/reminder
+// @access  Private
+const getReminder = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+     res.status(400);
+     throw new Error('User doesnt exist');
+    }
+    res.status(200).json(user.reminder);
+});
 export {
     authUser,
     registerUser,
@@ -803,5 +869,7 @@ export {
     createTodo,
     deleteTodo,
     editTodo,
-    getTodos
+    getTodos,
+    toggleReminder,
+    getReminder
 };

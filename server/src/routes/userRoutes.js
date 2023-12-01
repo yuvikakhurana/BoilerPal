@@ -24,7 +24,9 @@ import {
     createTodo,
     deleteTodo,
     editTodo,
-    getTodos
+    getTodos,
+    toggleReminder,
+    getReminder
 } from "../controllers/userController.js";
 import { protect } from '../middleware/apiProtectionMiddleware.js';
 
@@ -56,6 +58,7 @@ userRoutes.post('/todo', protect, createTodo);
 userRoutes.delete('/todo', protect, deleteTodo);
 userRoutes.put('/todo', protect, editTodo);
 userRoutes.get('/todo', protect, getTodos);
-
+userRoutes.post('/reminder', protect, toggleReminder);
+userRoutes.get('/reminder', protect, getReminder);
 
 export default userRoutes;
