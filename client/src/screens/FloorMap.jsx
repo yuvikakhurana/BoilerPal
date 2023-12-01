@@ -96,6 +96,7 @@ const FloorMap = () => {
                         <MenuItem value={"WALC Third floor"} onClick={handleFloorClick}>WALC Third floor</MenuItem>
                     </Select>
                     <div className="row"><table style={{margin: "20px"}}>
+                    <h2>Hours</h2>
                      <tr>
                        <th>Sunday</th>
                        <td>All Day</td>
@@ -164,6 +165,7 @@ const FloorMap = () => {
                       <MenuItem value={"PMU Second floor"} onClick={handleFloorClick}>PMU Second floor</MenuItem>
                   </Select>
                   <div className="row"><table style={{margin: "20px"}}>
+                  <h2>Hours</h2>
                      <tr>
                        <th>Sunday</th>
                        <td>6AM–12AM</td>
@@ -251,6 +253,7 @@ const FloorMap = () => {
                   </button>
                   </div>
                   <div className="row"><table style={{margin: "20px"}}>
+                  <h2>Hours</h2>
                      <tr>
                        <th>Sunday</th>
                        <td>Closed</td>
@@ -320,6 +323,7 @@ const FloorMap = () => {
                       <MenuItem value={"HAAS Second floor"} onClick={handleFloorClick}>HAAS Second floor</MenuItem>
                   </Select>
                   <div className="row"><table style={{margin: "20px"}}>
+                  <h2>Hours</h2>
                    <tr>
                      <th>Sunday</th>
                      <td>Closed</td>
@@ -388,6 +392,7 @@ const FloorMap = () => {
                       <MenuItem value={"Lawson Third floor"} onClick={handleFloorClick}>Lawson Third floor</MenuItem>
                   </Select>
                   <div className="row"><table style={{margin: "20px"}}>
+                  <h2>Hours</h2>
                      <tr>
                        <th>Sunday</th>
                        <td>7AM–10:30PM</td>
@@ -464,6 +469,7 @@ const FloorMap = () => {
                       <MenuItem value={"DL Fifth floor"} onClick={handleFloorClick}>DL Fifth floor</MenuItem>
                   </Select>
                   <div className="row"><table style={{margin: "20px"}}>
+                  <h2>Hours</h2>
                    <tr>
                      <th>Sunday</th>
                      <td>Closed</td>

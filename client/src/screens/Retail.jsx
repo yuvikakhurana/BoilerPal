@@ -8,6 +8,7 @@ import Button from "react-bootstrap/esm/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import Review from "./Review";
+import "./retail.css"
 const Retail = () => {
   // Reviews START
 
@@ -334,7 +335,9 @@ Meal Swipes are accepted at this location during the academic year from 5 PM - 8
           <Accordion.Item eventKey="0">
             <Accordion.Header>{accordionData[0].title}</Accordion.Header>
             <Accordion.Body>
+              <div class = "disc">
               {accordionData[0].content}
+              </div>
               <Accordion defaultActiveKey="0">
                 <Accordion.Item eventKey="18">
                   <Accordion.Header>Reviews</Accordion.Header>
@@ -505,7 +508,9 @@ Meal Swipes are accepted at this location during the academic year from 5 PM - 8
           <Accordion.Item eventKey="0">
             <Accordion.Header>{accordionData[1].title}</Accordion.Header>
             <Accordion.Body>
+                <div class = "disc">
               {accordionData[1].content}
+              </div>
               <Accordion defaultActiveKey="0">
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Reviews</Accordion.Header>
@@ -672,7 +677,9 @@ Meal Swipes are accepted at this location during the academic year from 5 PM - 8
           <Accordion.Item eventKey="0">
             <Accordion.Header>{accordionData[2].title}</Accordion.Header>
             <Accordion.Body>
+            <div class = "disc">
               {accordionData[2].content}
+              </div>
               <Accordion defaultActiveKey="0">
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Reviews</Accordion.Header>
@@ -843,7 +850,9 @@ Meal Swipes are accepted at this location during the academic year from 5 PM - 8
           <Accordion.Item eventKey="0">
             <Accordion.Header>{accordionData[3].title}</Accordion.Header>
             <Accordion.Body>
+            <div class = "disc">
               {accordionData[3].content}
+              </div>
               <Accordion defaultActiveKey="0">
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Reviews</Accordion.Header>
@@ -1014,7 +1023,9 @@ Meal Swipes are accepted at this location during the academic year from 5 PM - 8
           <Accordion.Item eventKey="0">
             <Accordion.Header>{accordionData[4].title}</Accordion.Header>
             <Accordion.Body>
+            <div class = "disc">
               {accordionData[4].content}
+              </div>
               <Accordion defaultActiveKey="0">
                 <Accordion.Item eventKey="1">
                   <Accordion.Header>Reviews</Accordion.Header>
