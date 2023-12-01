@@ -43,7 +43,7 @@ const router = createBrowserRouter(
         <Route path="/gpa-calc" element={<GpaCalc />} />
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/menu" element={<Menu />} />
-        <Route path="/floormap" element={<FloorMap />} />
+        <Route path="/building-info" element={<FloorMap />} />
         <Route path="/vending" element={<VendingMachine />} />
         <Route path="/reserve" element={<Reservation />} />
         <Route path="/routing" element={<Routing />} />

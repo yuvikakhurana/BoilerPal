@@ -58,8 +58,8 @@ const Header = () => {
                     <Nav.Link>Dining Menu</Nav.Link>
                   </LinkContainer>
 
-                  <LinkContainer to="/floormap">
-                    <Nav.Link>Floor maps</Nav.Link>
+                  <LinkContainer to='/building-info'>
+                    <Nav.Link>Building Info</Nav.Link>
                   </LinkContainer>
 
                   {/* <LinkContainer to="/vending">
