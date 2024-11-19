@@ -29,17 +29,17 @@ The current situation for both new and existing Purdue students is marked by fra
 chat-app/client-vite-project/env.local:
 ```
 VITE_BASE_URL=http://localhost:1337
-VITE_PROJECT_ID=58841525-eb73-4de6-9a4e-c518114c2b5e
+VITE_PROJECT_ID=***
 ```
 
 chat-app/server-vite-project/.env:
 ```
 PORT=1337
-OPEN_API_KEY=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
+OPEN_API_KEY=***
 BOT_USER_NAME=AI_bot-Pete
 BOT_USER_SECRET=purdue
-PROJECT_ID=58841525-eb73-4de6-9a4e-c518114c2b5e
-PRIVATE_KEY=86344ec2-642f-48a1-b306-fc94d3ac1f41
+PROJECT_ID=***
+PRIVATE_KEY=***
 ```
 
 Install all dependencies for `client/` and `server/`.
@@ -78,8 +78,8 @@ REACT_APP_SERVER_URL=http://localhost:3000
 ```
 NODE_ENV=development
 PORT=5000
-MONGO_URI=mongodb+srv://boilerpalteam:cWMlwvymsTr0qlBc@boilerpal.7xecrsu.mongodb.net/boilerpal?retryWrites=true&w=majority
-JWT_SECRET=abc123
+MONGO_URI=***
+JWT_SECRET=***
 BASE_URL=http://localhost:3000/
 ```
 
